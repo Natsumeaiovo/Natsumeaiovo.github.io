@@ -10,27 +10,31 @@
 </ol>
 <p>​    AMD FidelityFX Super Resolution，简称FSR，中文名称是“AMD超级分辨率锐画技术”。就是使用超分辨率技术实现高分辨率，高品质游戏画面，并显著提高游戏运行效率的一套实现方法和程序库。它免费开源，跨平台，针对硬件进行了优化，集成到程序也非常简单（实际上只有两个文件），最神奇的是，运行它并不需要特殊的硬件，甚至如前几代的Intel CPU内集成的核显，都可以使用该技术。FSR算法正式开源后，FSR技术的源代码、开发文档、实例都已经放在了AMD GPUOpen网站上，开发者可以直接用于他们的游戏。AMD目前提供的实例支持DX12、Vulkan，但保证说编译着色器也兼容DX11。</p>
 <p>​    AMD还表示，FSR技术不像NVIDIA DLSS那样依赖于运动向量(Motion Vector)或者历史缓冲区(History Buffer)，因此不需要专门的Tensor核心来加速，但同样也能使用时间数据，只是现阶段FSR的重心是简化开发、快速推向市场，技术上会逐步深入增强。来看看FSR的实际表现：</p>
-<p><img src="/2021/12/02/magpie/image-20211203195938737.png" alt="image-20211203195938737"></p>
+<img src="https://pic.imgdb.cn/item/61aa41fe2ab3f51d91bc65fd.png" style="zoom:50%;">
+
+<img src="https://pic.imgdb.cn/item/61aa44a42ab3f51d91be0e22.jpg" style="zoom:50%;">
+
+
 <ol start="2">
 <li>Anime4K</li>
 </ol>
-<p>​    当你在看老番或是在推一部老物gal或avg，是否在为其画质差而发愁？Anime4K（动漫图片超分辨率算法）即是一个实时、视频动画放大算法，不用等待处理视频动画的时间，在你观看的同时即可做到画质提升，在一周内，Anime4K在Github上收获了将近3千颗星，作者在6天前介绍了reddit上的项目，并成为每个人的热门话题，引起了极大的关注。引用一下作者原话：</p>
+<p>​    当你在看老番或是在推一部老物 gal &amp; avg ，是否在为其画质差而发愁？Anime4K（动漫图片超分辨率算法）即是一个实时、视频动画放大算法，不用等待处理视频动画的时间，在你观看的同时即可做到画质提升，在一周内，Anime4K在Github上收获了将近3千颗星，作者在6天前介绍了reddit上的项目，并成为每个人的热门话题，引起了极大的关注。引用一下作者原话：</p>
 <blockquote>
 <p>Anime4K is a set of open-source, high-quality real-time anime upscaling/denoising algorithms that can be implemented in any programming language.</p>
 <p>The simplicity and speed of Anime4K allows the user to watch upscaled anime in real time, as we believe in preserving original content and promoting freedom of choice for all anime fans. Re-encoding anime into 4K should be avoided as it is non-reversible, potentially damages original content by introducing artifacts, takes up to O(n<sup>2</sup>) more disk space and more importantly, does so without any meaningful decrease in entropy (lost information is lost).</p>
 </blockquote>
 <p>​    附上开源项目原地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/bloc97/Anime4K">https://github.com/bloc97/Anime4K</a></p>
 <p>​    将其导入到支持的视频软件后，便可以享受1080P升级到近4K的画质了，来看看使用具体表现！</p>
-<img src="/2021/12/02/magpie/image-20211203203355631.png" alt="image-20211203203355631" style="zoom:50%;">
+<img src="https://pic.imgdb.cn/item/61aa41fe2ab3f51d91bc6608.png" style="zoom:50%;">
 
-<img src="/2021/12/02/magpie/image-20211203203530842.png" alt="image-20211203203530842" style="zoom:33%;">
+<img src="https://pic.imgdb.cn/item/61aa41fe2ab3f51d91bc6619.png" style="zoom:33%;">
 
 <h2 id="使用Magpie提高游戏体验"><a href="#使用Magpie提高游戏体验" class="headerlink" title="使用Magpie提高游戏体验"></a>使用Magpie提高游戏体验</h2><p>开源项目地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/Blinue/Magpie/tree/v0.7.1">https://github.com/Blinue/Magpie/tree/v0.7.1</a></p>
 <blockquote>
 <p>Magpie 可以将任意窗口放大至全屏，支持多种高级缩放算法，包括 Lanczos、<a href="https://github.com/bloc97/Anime4K">Anime4K</a>、<a href="https://github.com/GPUOpen-Effects/FidelityFX-FSR">FSR</a>、<a href="https://github.com/igv/FSRCNN-TensorFlow">FSRCNNX</a>等。</p>
 <p>主要用于游戏窗口的放大显示，适用于不支持全屏模式，或者内置的全屏模式会使画面模糊的情况。</p>
 </blockquote>
-<img src="/2021/12/02/magpie/image-20211203190912581.png" alt="image-20211203190912581" style="zoom:67%;">
+<img src="https://pic.imgdb.cn/item/61aa41fe2ab3f51d91bc65f7.png" style="zoom:67%;">
 
 <p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多</p>
 <p>当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
@@ -79,7 +83,33 @@
         <category>数据结构</category>
       </categories>
       <tags>
-        <tag>数据结构</tag>
+        <tag>计算机</tag>
+        <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数制与编码</title>
+    <url>/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/</url>
+    <content><![CDATA[<h2 id="进位计数制"><a href="#进位计数制" class="headerlink" title="进位计数制"></a>进位计数制</h2><ol>
+<li><p>二进制 &lt;–&gt; 八进制： 3位一组</p>
+</li>
+<li><p>二进制 &lt;–&gt; 十六进制 4位一组</p>
+</li>
+<li><p>十进制 –&gt; 任意进制</p>
+<p>整数部分：除基取余法</p>
+<p><img src="/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/image-20211203221733592.png" alt="image-20211203221733592"></p>
+<p>小数部分：乘基取整法</p>
+<p><img src="/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/image-20211203221524798.png" alt="image-20211203221524798"></p>
+</li>
+</ol>
+<h2 id="真值和机器数"><a href="#真值和机器数" class="headerlink" title="真值和机器数"></a>真值和机器数</h2><p>真值：符合人类习惯的数字，如+15、-8等</p>
+<p>机器数：数字实际存到机器里的形式，正负号需要被“数字化”。常用的有原码、补码和反码表示法。</p>
+]]></content>
+      <categories>
+        <category>计算机组成原理</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
         <tag>学习</tag>
       </tags>
   </entry>
