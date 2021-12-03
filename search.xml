@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Magpie</title>
-    <url>/2021/12/02/magpie/</url>
-    <content><![CDATA[<p>test</p>
-<span id="more"></span>
-
-<p><i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/Blinue/Magpie/tree/v0.7.1">https://github.com/Blinue/Magpie/tree/v0.7.1</a></p>
-]]></content>
-      <categories>
-        <category>resources</category>
-      </categories>
-  </entry>
-  <entry>
     <title>二叉树四种遍历的非递归方式</title>
     <url>/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/</url>
     <content><![CDATA[<h2 id="前序、中序和后续遍历"><a href="#前序、中序和后续遍历" class="headerlink" title="前序、中序和后续遍历"></a>前序、中序和后续遍历</h2><span id="more"></span>
@@ -50,5 +38,17 @@
         <tag>数据结构</tag>
         <tag>学习</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Magpie</title>
+    <url>/2021/12/02/magpie/</url>
+    <content><![CDATA[<p>test</p>
+<span id="more"></span>
+
+<p><i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/Blinue/Magpie/tree/v0.7.1">https://github.com/Blinue/Magpie/tree/v0.7.1</a></p>
+]]></content>
+      <categories>
+        <category>resources</category>
+      </categories>
   </entry>
 </search>
