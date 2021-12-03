@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、前序、中序和后续遍历">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树四种遍历的非递归方式">
+<meta property="og:url" content="http://example.com/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Kusanagi的博客">
+<meta property="og:description" content="一、前序、中序和后续遍历">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-01T17:28:11.000Z">
+<meta property="article:modified_time" content="2021-12-03T13:26:02.886Z">
+<meta property="article:author" content="Kusanagi">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>二叉树四种遍历的非递归方式 | Kusanagi的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kusanagi的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/categories/resources/" rel="section"><i class="fa fa-cube fa-fw"></i>资源</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/61a75d6d2ab3f51d91cd4ff7.jpg">
+      <meta itemprop="name" content="Kusanagi">
+      <meta itemprop="description" content="好吃就是高兴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kusanagi的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          二叉树四种遍历的非递归方式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-02 01:28:11" itemprop="dateCreated datePublished" datetime="2021-12-02T01:28:11+08:00">2021-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-03 21:26:02" itemprop="dateModified" datetime="2021-12-03T21:26:02+08:00">2021-12-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、前序、中序和后续遍历"><a href="#一、前序、中序和后续遍历" class="headerlink" title="一、前序、中序和后续遍历"></a>一、前序、中序和后续遍历</h2><span id="more"></span>
+
+<ol>
+<li>需用到栈：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; StackNode, *LinkStackPtr;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    LinkStackPtr top;</span><br><span class="line">    <span class="keyword">int</span> count;</span><br><span class="line">&#125; LinkStack;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitStack</span><span class="params">(LinkStack *S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S-&gt;top = <span class="literal">NULL</span>;</span><br><span class="line">    S-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(LinkStack *S, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == e)</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">    LinkStackPtr s = (LinkStackPtr)<span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(StackNode));   <span class="comment">//s指向新栈结点的指针</span></span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    s-&gt;next = S-&gt;top; <span class="comment">/* 把当前的栈顶元素赋值给新结点的直接后继 */</span></span><br><span class="line">    S-&gt;top = s;       <span class="comment">/* 将新的结点s赋值给栈顶指针 */</span></span><br><span class="line">    S-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(LinkStack *S, BiTree *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LinkStackPtr p;</span><br><span class="line">    <span class="keyword">if</span> ((*S).count == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">	*e = S-&gt;top-&gt;data;</span><br><span class="line">    p = S-&gt;top;            <span class="comment">/* 将栈顶结点赋值给p */</span></span><br><span class="line">    S-&gt;top = S-&gt;top-&gt;next; <span class="comment">/* 使得栈顶指针下移一位，指向后一结点 */</span></span><br><span class="line">    <span class="built_in">free</span>(p);               <span class="comment">/* 释放结点p */</span></span><br><span class="line">    S-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">GetTop</span><span class="params">(LinkStack S, BiTree &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S.top == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        p = S.top-&gt;data;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>前序遍历实现：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：前序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的右子树</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>中序遍历实现：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：中序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的根结点</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//?  左子树空，弹出栈顶元素并输出，转为右子树继续循环</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,p-&gt;data);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>后序遍历实现：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：后序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p = T, r = <span class="literal">NULL</span>;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//todo  走到最左边</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);</span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">GetTop</span>(S, p);</span><br><span class="line">			<span class="keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)		<span class="comment">//*  若右子树存在, 且未被访问过</span></span><br><span class="line">				p = p-&gt;rchild;		<span class="comment">//todo 转向右边</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">				<span class="built_in">visit</span>(p-&gt;data);</span><br><span class="line">				r = p;		<span class="comment">//*  记录最近访问过的结点</span></span><br><span class="line">				p = <span class="literal">NULL</span>;	<span class="comment">//?  将p置空</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="comment">//else</span></span><br><span class="line">	&#125;<span class="comment">//while</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、层次遍历"><a href="#二、层次遍历" class="headerlink" title="二、层次遍历"></a>二、层次遍历</h2><ol>
+<li><p>需用到队列：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree *data;</span><br><span class="line">    <span class="keyword">int</span> front; <span class="comment">/* 头指针 */</span></span><br><span class="line">    <span class="keyword">int</span> rear;  <span class="comment">/* 尾指针，若队列不空，指向队列尾元素的下一个位置 */</span></span><br><span class="line">&#125; SqQueue;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitQueue</span><span class="params">(SqQueue &amp;Q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Q.data = (BiTree *)<span class="built_in">malloc</span>((MAXSIZE+<span class="number">1</span>) * <span class="built_in"><span class="keyword">sizeof</span></span>(BiTree));</span><br><span class="line">    <span class="keyword">if</span>(!Q.data)</span><br><span class="line">        <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    Q.front = <span class="number">0</span>;</span><br><span class="line">    Q.rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Q.rear + <span class="number">1</span>) % MAXSIZE == Q.front) <span class="comment">/* 队列满的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    Q.data[Q.rear] = e;              <span class="comment">/* 将元素e赋值给队尾 */</span></span><br><span class="line">    Q.rear = (Q.rear + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* rear指针向后移一位置， */</span></span><br><span class="line">                                       <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">DeQueue</span><span class="params">(SqQueue &amp;Q, BiTree &amp;e)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Q.front == Q.rear) <span class="comment">/* 队列空的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    e = Q.data[Q.front];              <span class="comment">/* 将队头元素赋值给e */</span></span><br><span class="line">    Q.front = (Q.front + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* front指针向后移一位置， */</span></span><br><span class="line">                                         <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">QueueEmpty</span><span class="params">(SqQueue Q)</span></span></span><br></pre></td></tr></table></figure></li>
+<li><p>层次遍历实现</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//todo  操作结果：层次遍历T </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LevelOrderTraverse</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p;</span><br><span class="line">	SqQueue qu;	<span class="comment">//使用队列来层次遍历二叉树</span></span><br><span class="line">	<span class="built_in">InitQueue</span>(qu);</span><br><span class="line">	<span class="built_in">EnQueue</span>(qu, T);</span><br><span class="line">	<span class="keyword">while</span>(!<span class="built_in">QueueEmpty</span>(qu))		<span class="comment">//队列非空/*  */</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DeQueue</span>(qu, p);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;lchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;lchild);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;rchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;rchild);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/02/magpie/" rel="prev" title="使用Magpie来增加你的游戏体验！">
+      <i class="fa fa-chevron-left"></i> 使用Magpie来增加你的游戏体验！
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E5%92%8C%E5%90%8E%E7%BB%AD%E9%81%8D%E5%8E%86"><span class="nav-number">1.</span> <span class="nav-text">一、前序、中序和后续遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86"><span class="nav-number">2.</span> <span class="nav-text">二、层次遍历</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kusanagi"
+      src="https://pic.imgdb.cn/item/61a75d6d2ab3f51d91cd4ff7.jpg">
+  <p class="site-author-name" itemprop="name">Kusanagi</p>
+  <div class="site-description" itemprop="description">好吃就是高兴</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/natsumeaiovo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:natsumeaiovo@outlook.com" title="E-Mail → mailto:natsumeaiovo@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/natsumeaiovo" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/natsumeaiovo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kusanagi</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'pGYydxQboS4k1eCObipep9vD-gzGzoHsz',
+      appKey     : 'W4kzTdNPHzxRSIF6iu8XhsQO',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/haruto.model.json"},"display":{"position":"right","width":200,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>
