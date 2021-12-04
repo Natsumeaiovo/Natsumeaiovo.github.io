@@ -1,45 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>二叉树四种遍历的非递归方式</title>
-    <url>/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/</url>
-    <content><![CDATA[<h2 id="一、前序、中序和后续遍历"><a href="#一、前序、中序和后续遍历" class="headerlink" title="一、前序、中序和后续遍历"></a>一、前序、中序和后续遍历</h2><span id="more"></span>
-
-<ol>
-<li>需用到栈：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; StackNode, *LinkStackPtr;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    LinkStackPtr top;</span><br><span class="line">    <span class="keyword">int</span> count;</span><br><span class="line">&#125; LinkStack;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitStack</span><span class="params">(LinkStack *S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S-&gt;top = <span class="literal">NULL</span>;</span><br><span class="line">    S-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(LinkStack *S, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == e)</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">    LinkStackPtr s = (LinkStackPtr)<span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(StackNode));   <span class="comment">//s指向新栈结点的指针</span></span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    s-&gt;next = S-&gt;top; <span class="comment">/* 把当前的栈顶元素赋值给新结点的直接后继 */</span></span><br><span class="line">    S-&gt;top = s;       <span class="comment">/* 将新的结点s赋值给栈顶指针 */</span></span><br><span class="line">    S-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(LinkStack *S, BiTree *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LinkStackPtr p;</span><br><span class="line">    <span class="keyword">if</span> ((*S).count == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">	*e = S-&gt;top-&gt;data;</span><br><span class="line">    p = S-&gt;top;            <span class="comment">/* 将栈顶结点赋值给p */</span></span><br><span class="line">    S-&gt;top = S-&gt;top-&gt;next; <span class="comment">/* 使得栈顶指针下移一位，指向后一结点 */</span></span><br><span class="line">    <span class="built_in">free</span>(p);               <span class="comment">/* 释放结点p */</span></span><br><span class="line">    S-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">GetTop</span><span class="params">(LinkStack S, BiTree &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S.top == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        p = S.top-&gt;data;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>前序遍历实现：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：前序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的右子树</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>中序遍历实现：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：中序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的根结点</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//?  左子树空，弹出栈顶元素并输出，转为右子树继续循环</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,p-&gt;data);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>后序遍历实现：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：后序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p = T, r = <span class="literal">NULL</span>;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//todo  走到最左边</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);</span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">GetTop</span>(S, p);</span><br><span class="line">			<span class="keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)		<span class="comment">//*  若右子树存在, 且未被访问过</span></span><br><span class="line">				p = p-&gt;rchild;		<span class="comment">//todo 转向右边</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">				<span class="built_in">visit</span>(p-&gt;data);</span><br><span class="line">				r = p;		<span class="comment">//*  记录最近访问过的结点</span></span><br><span class="line">				p = <span class="literal">NULL</span>;	<span class="comment">//?  将p置空</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="comment">//else</span></span><br><span class="line">	&#125;<span class="comment">//while</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="二、层次遍历"><a href="#二、层次遍历" class="headerlink" title="二、层次遍历"></a>二、层次遍历</h2><ol>
-<li><p>需用到队列：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree *data;</span><br><span class="line">    <span class="keyword">int</span> front; <span class="comment">/* 头指针 */</span></span><br><span class="line">    <span class="keyword">int</span> rear;  <span class="comment">/* 尾指针，若队列不空，指向队列尾元素的下一个位置 */</span></span><br><span class="line">&#125; SqQueue;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitQueue</span><span class="params">(SqQueue &amp;Q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Q.data = (BiTree *)<span class="built_in">malloc</span>((MAXSIZE+<span class="number">1</span>) * <span class="built_in"><span class="keyword">sizeof</span></span>(BiTree));</span><br><span class="line">    <span class="keyword">if</span>(!Q.data)</span><br><span class="line">        <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    Q.front = <span class="number">0</span>;</span><br><span class="line">    Q.rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Q.rear + <span class="number">1</span>) % MAXSIZE == Q.front) <span class="comment">/* 队列满的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    Q.data[Q.rear] = e;              <span class="comment">/* 将元素e赋值给队尾 */</span></span><br><span class="line">    Q.rear = (Q.rear + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* rear指针向后移一位置， */</span></span><br><span class="line">                                       <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">DeQueue</span><span class="params">(SqQueue &amp;Q, BiTree &amp;e)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Q.front == Q.rear) <span class="comment">/* 队列空的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    e = Q.data[Q.front];              <span class="comment">/* 将队头元素赋值给e */</span></span><br><span class="line">    Q.front = (Q.front + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* front指针向后移一位置， */</span></span><br><span class="line">                                         <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">QueueEmpty</span><span class="params">(SqQueue Q)</span></span></span><br></pre></td></tr></table></figure></li>
-<li><p>层次遍历实现</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//todo  操作结果：层次遍历T </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LevelOrderTraverse</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p;</span><br><span class="line">	SqQueue qu;	<span class="comment">//使用队列来层次遍历二叉树</span></span><br><span class="line">	<span class="built_in">InitQueue</span>(qu);</span><br><span class="line">	<span class="built_in">EnQueue</span>(qu, T);</span><br><span class="line">	<span class="keyword">while</span>(!<span class="built_in">QueueEmpty</span>(qu))		<span class="comment">//队列非空/*  */</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DeQueue</span>(qu, p);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;lchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;lchild);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;rchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;rchild);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>计算机</tag>
-        <tag>学习</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用Magpie来增加你的游戏体验！</title>
     <url>/2021/12/02/magpie/</url>
     <content><![CDATA[<h2 id="FSR算法和Anime4K算法"><a href="#FSR算法和Anime4K算法" class="headerlink" title="FSR算法和Anime4K算法"></a>FSR算法和Anime4K算法</h2><span id="more"></span>
@@ -71,7 +32,7 @@
 <p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>全部变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多</p>
 <p>当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
 <p>当然，使用算法实时渲染提升画质，对显卡来说是有性能要求的，所以要想畅玩享受全屏清晰画质的 anime &amp; gal 的话，一个相对来说好点显卡是必须的。</p>
-<p>对于提升游戏帧数来说，不同游戏的体验不同，实际使用Magpie支持的FSR算法体验不算很好，期待之后算法的改善。</p>
+<p>对于提升游戏帧数来说，不同游戏的体验不同，实际使用Magpie支持的FSR算法体验不算很好，期待以后算法的改善。</p>
 ]]></content>
       <categories>
         <category>resources</category>
@@ -81,19 +42,44 @@
       </tags>
   </entry>
   <entry>
+    <title>二叉树四种遍历的非递归方式</title>
+    <url>/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="一、前序、中序和后续遍历"><a href="#一、前序、中序和后续遍历" class="headerlink" title="一、前序、中序和后续遍历"></a>一、前序、中序和后续遍历</h2><span id="more"></span>
+
+<h3 id="需用到栈："><a href="#需用到栈：" class="headerlink" title="需用到栈："></a>需用到栈：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; StackNode, *LinkStackPtr;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    LinkStackPtr top;</span><br><span class="line">    <span class="keyword">int</span> count;</span><br><span class="line">&#125; LinkStack;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitStack</span><span class="params">(LinkStack *S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S-&gt;top = <span class="literal">NULL</span>;</span><br><span class="line">    S-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(LinkStack *S, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == e)</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">    LinkStackPtr s = (LinkStackPtr)<span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(StackNode));   <span class="comment">//s指向新栈结点的指针</span></span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    s-&gt;next = S-&gt;top; <span class="comment">/* 把当前的栈顶元素赋值给新结点的直接后继 */</span></span><br><span class="line">    S-&gt;top = s;       <span class="comment">/* 将新的结点s赋值给栈顶指针 */</span></span><br><span class="line">    S-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(LinkStack *S, BiTree *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LinkStackPtr p;</span><br><span class="line">    <span class="keyword">if</span> ((*S).count == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">	*e = S-&gt;top-&gt;data;</span><br><span class="line">    p = S-&gt;top;            <span class="comment">/* 将栈顶结点赋值给p */</span></span><br><span class="line">    S-&gt;top = S-&gt;top-&gt;next; <span class="comment">/* 使得栈顶指针下移一位，指向后一结点 */</span></span><br><span class="line">    <span class="built_in">free</span>(p);               <span class="comment">/* 释放结点p */</span></span><br><span class="line">    S-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">GetTop</span><span class="params">(LinkStack S, BiTree &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S.top == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        p = S.top-&gt;data;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前序遍历实现："><a href="#前序遍历实现：" class="headerlink" title="前序遍历实现："></a>前序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：前序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的右子树</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="中序遍历实现："><a href="#中序遍历实现：" class="headerlink" title="中序遍历实现："></a>中序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：中序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的根结点</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//?  左子树空，弹出栈顶元素并输出，转为右子树继续循环</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,p-&gt;data);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后序遍历实现："><a href="#后序遍历实现：" class="headerlink" title="后序遍历实现："></a>后序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：后序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p = T, r = <span class="literal">NULL</span>;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//todo  走到最左边</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);</span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">GetTop</span>(S, p);</span><br><span class="line">			<span class="keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)		<span class="comment">//*  若右子树存在, 且未被访问过</span></span><br><span class="line">				p = p-&gt;rchild;		<span class="comment">//todo 转向右边</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">				<span class="built_in">visit</span>(p-&gt;data);</span><br><span class="line">				r = p;		<span class="comment">//*  记录最近访问过的结点</span></span><br><span class="line">				p = <span class="literal">NULL</span>;	<span class="comment">//?  将p置空</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="comment">//else</span></span><br><span class="line">	&#125;<span class="comment">//while</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、层次遍历"><a href="#二、层次遍历" class="headerlink" title="二、层次遍历"></a>二、层次遍历</h2><h3 id="需用到队列："><a href="#需用到队列：" class="headerlink" title="需用到队列："></a>需用到队列：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree *data;</span><br><span class="line">    <span class="keyword">int</span> front; <span class="comment">/* 头指针 */</span></span><br><span class="line">    <span class="keyword">int</span> rear;  <span class="comment">/* 尾指针，若队列不空，指向队列尾元素的下一个位置 */</span></span><br><span class="line">&#125; SqQueue;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitQueue</span><span class="params">(SqQueue &amp;Q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Q.data = (BiTree *)<span class="built_in">malloc</span>((MAXSIZE+<span class="number">1</span>) * <span class="built_in"><span class="keyword">sizeof</span></span>(BiTree));</span><br><span class="line">    <span class="keyword">if</span>(!Q.data)</span><br><span class="line">        <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    Q.front = <span class="number">0</span>;</span><br><span class="line">    Q.rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Q.rear + <span class="number">1</span>) % MAXSIZE == Q.front) <span class="comment">/* 队列满的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    Q.data[Q.rear] = e;              <span class="comment">/* 将元素e赋值给队尾 */</span></span><br><span class="line">    Q.rear = (Q.rear + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* rear指针向后移一位置， */</span></span><br><span class="line">                                       <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">DeQueue</span><span class="params">(SqQueue &amp;Q, BiTree &amp;e)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Q.front == Q.rear) <span class="comment">/* 队列空的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    e = Q.data[Q.front];              <span class="comment">/* 将队头元素赋值给e */</span></span><br><span class="line">    Q.front = (Q.front + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* front指针向后移一位置， */</span></span><br><span class="line">                                         <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">QueueEmpty</span><span class="params">(SqQueue Q)</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="层次遍历实现"><a href="#层次遍历实现" class="headerlink" title="层次遍历实现"></a>层次遍历实现</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//todo  操作结果：层次遍历T </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LevelOrderTraverse</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p;</span><br><span class="line">	SqQueue qu;	<span class="comment">//使用队列来层次遍历二叉树</span></span><br><span class="line">	<span class="built_in">InitQueue</span>(qu);</span><br><span class="line">	<span class="built_in">EnQueue</span>(qu, T);</span><br><span class="line">	<span class="keyword">while</span>(!<span class="built_in">QueueEmpty</span>(qu))		<span class="comment">//队列非空/*  */</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DeQueue</span>(qu, p);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;lchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;lchild);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;rchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;rchild);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>计算机</tag>
+        <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数制与编码</title>
     <url>/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/</url>
     <content><![CDATA[<h2 id="一、进位计数制"><a href="#一、进位计数制" class="headerlink" title="一、进位计数制"></a>一、进位计数制</h2><p>二进制 &lt;–&gt; 八进制：  3位一组</p>
 <p>二进制 &lt;–&gt; 十六进制  4位一组</p>
 <p>十进制 –&gt; 任意进制</p>
 <p>整数部分：除基取余法</p>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204011910835.png" alt="image-20211204011910835" style="zoom:50%;" />
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204011910835.png" alt="image-20211204011910835" style="zoom: 80%;" />
 
 <p>小数部分：乘基取整法</p>
 <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204013540140.png" alt="image-20211204013540140" style="zoom: 67%;" />
 
-<p>真值：符合人类习惯的数字，如+15、-8等</p>
-<p>机器数：数字实际存到机器里的形式，正负号需要被“数字化”。常用的有原码、补码和反码表示法。</p>
+<p><strong>真值：符合人类习惯的数字，如+15、-8等</strong></p>
+<p><strong>机器数：数字实际存到机器里的形式，正负号需要被“数字化”。常用的有原码、补码和反码表示法。</strong></p>
 <hr>
 <h2 id="二、BCD码"><a href="#二、BCD码" class="headerlink" title="二、BCD码"></a>二、BCD码</h2><p>二进制编码的十进制数（Binary-Coded Decimal, BCD）通常采用 4 位二进制数来表示一位十进制数中的 0~9 这10个编码。这种编码方法使二进制数和十进制数之间的转换得意快速进行。但4位二进制数可以组合出 2<sup>4</sup> 种代码，因此必有 6 种状态为冗余。列举几种常用BCD码：</p>
 <h3 id="8421码（最常用）"><a href="#8421码（最常用）" class="headerlink" title="8421码（最常用）"></a>8421码（最常用）</h3><p>是一种有权码，权值从高到低依次为8,4,2,1，下图为其映射关系</p>
@@ -198,20 +184,79 @@
 <p><em>大写字母：65(0100 0001)～90(0101 1010)</em></p>
 <p><em>小写字母：97(0110 0001)～122(0111 1010)</em></p>
 <h3 id="汉字的表示与编码"><a href="#汉字的表示与编码" class="headerlink" title="汉字的表示与编码"></a>汉字的表示与编码</h3><ol>
-<li><p>汉字编码：包括汉字的输入编码、汉字内码、汉字字形码三种，是在计算机中用于输入、内部处理和输出三种用途的编码。</p>
+<li><p><strong>汉字编码：</strong>包括汉字的输入编码、汉字内码、汉字字形码三种，是在计算机中用于输入、内部处理和输出三种用途的编码。</p>
 </li>
-<li><p>区位码：用两个字节表示一个汉字，每字节用七位码，将汉字和图形符号排列在一个 94 行 94 列的二维代码表中。</p>
-<p>区位码是 4 位十进制数，前 2 位是区码，后 2 位是位码，所以称为区位码。</p>
+<li><p><strong>区位码：</strong>区位要分开看，是区码和位码的组合。用两个字节表示一个汉字，每字节用七位码，将汉字和图形符号排列在一个 94 行 94 列的二维代码表中。区位码是 4 位十进制数，前 2 位是区码，后 2 位是位码，所以称为区位码。</p>
+<table>
+<thead>
+<tr>
+<th align="center">区码\位码</th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">…</th>
+<th align="center">94</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">…</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">94</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
 </li>
-<li><p>国际码：将十进制的区位码转换为十六进制数后，再在每字节上加上 20H 。国际码两字节的最高位都是 0 ，ASCII码的最高位也是 0 。</p>
+<li><p><strong>国际码：</strong>将十进制的区位码转换为十六进制数后，再在每字节上加上 20H 。国际码两字节的最高位都是 0 ，ASCII码的最高位也是 0 。</p>
+<blockquote>
+<p>（为什么要加入2020H呢？）ASCII码表前32（20H）位 0 - 31 都是用于通信和控制的字符，加上2020H后，可以防止信息交换时与“控制/通信字符”冲突。</p>
+</blockquote>
 </li>
-<li><p>汉字内码：为了方便计算机区分中文字符和英文字符，将国际码两字节的最高位都改为”1”，这就是汉字内码。</p>
+<li><p><strong>汉字内码：</strong>为了方便计算机区分中文字符和英文字符，将国际码两字节的最高位都改为”1”，这就是汉字内码。要保证最高位为“1”，所以要加上8080H。（注意是在国际码基础上 + 8080H）</p>
 </li>
 </ol>
-<p><em>区位码和国际码都是输入码，它们和汉字内码的关系（十六进制）如下：</em></p>
-<p><em>国际码 = （区位码）<sub>16</sub> + 2020H</em></p>
-<p><em>汉字内码 = （国际码）<sub>16</sub> + 8080H</em></p>
-]]></content>
+<p>区位码和国际码都是输入码，它们和汉字内码的关系（十六进制）如下：</p>
+<p><strong>国际码 = （区位码）<sub>16</sub> + 2020H</strong></p>
+<p><strong>汉字内码 = （国际码）<sub>16</sub> + 8080H</strong></p>
+<hr>
+<h2 id="四、校验码"><a href="#四、校验码" class="headerlink" title="四、校验码"></a>四、校验码</h2><blockquote>
+<p><strong>码字：</strong>由若干位代码组成的一个字叫码字。</p>
+<p><strong>校验码：</strong>指能够发现或能够自动纠正错误的数据编码，也称检错纠错编码。校验码的原理是通过增加一些冗余码，来检验或纠错编码。</p>
+<p><strong>码距：</strong>将两个码字逐位进行对比，具有<strong>不同的位的个数</strong>称为两个码字间的<strong>距离</strong>。一种编码方案可能有若干个合法码字，各合法码字间的<strong>最小距离</strong>称为“码距”。（如 1100 和 1101 之间的码距为 1，因为只有最低位翻转了。而1001和0010之间的码距则为3，因为只有1位没有变化）</p>
+<p>当d=1时，无检错能力；当d=2时，有检错能力；当d≥3时，若设计合理，可能具有检错、纠错能力</p>
+<p><strong>码距越大，检错、纠错的能力就越强，而且检错能力总是大于等于纠错能力。</strong></p>
+</blockquote>
+<h3 id="奇偶校验码"><a href="#奇偶校验码" class="headerlink" title="奇偶校验码"></a>奇偶校验码</h3><ul>
+<li>奇校验码：整个校验码（有效信息位和校验位）中“1”的个数为奇数。</li>
+<li>偶校验码：整个校验码（有效信息位和校验位）中“1”的个数为偶数。</li>
+</ul>
+<p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204143620554.png" alt="image-20211204143620554"></p>
+<p>eg.给出两个编码1001101和1010111的奇校验码和偶校验码。</p>
+<p>解：设最高位为校验位，余7位是信息位，则对应的奇偶校验码为：</p>
+<p>奇校验： <u>1</u>1001101 ····· <u>0</u>1010111 （异或结果为0说明出错）</p>
+<p>偶校验： <u>0</u>1001101 ····· <u>1</u>1010111 （异或结果为1说明出错）</p>
+<p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为奇数情况下的错误，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。1个校验位只能携带 true or false 2种状态信息，不能纠正错误。</p>
+<h3 id="海明校验码"><a href="#海明校验码" class="headerlink" title="海明校验码"></a>海明校验码</h3>]]></content>
       <categories>
         <category>计算机组成原理</category>
       </categories>
