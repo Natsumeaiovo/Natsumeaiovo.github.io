@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204112630157.png">
 <meta property="og:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204143620554.png">
 <meta property="article:published_time" content="2021-12-03T13:55:46.000Z">
-<meta property="article:modified_time" content="2021-12-04T07:02:33.237Z">
+<meta property="article:modified_time" content="2021-12-04T13:14:16.306Z">
 <meta property="article:author" content="Kusanagi">
 <meta property="article:tag" content="计算机">
 <meta property="article:tag" content="学习">
@@ -151,6 +151,11 @@
     <a href="/categories/resources/" rel="section"><i class="fa fa-cube fa-fw"></i>资源</a>
 
   </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-comments fa-fw"></i>留言</a>
+
+  </li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -236,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-04 15:02:33" itemprop="dateModified" datetime="2021-12-04T15:02:33+08:00">2021-12-04</time>
+                <time title="修改时间：2021-12-04 21:14:16" itemprop="dateModified" datetime="2021-12-04T21:14:16+08:00">2021-12-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -447,7 +452,7 @@
 <p>解：设最高位为校验位，余7位是信息位，则对应的奇偶校验码为：</p>
 <p>奇校验： <u>1</u>1001101 ····· <u>0</u>1010111 （异或结果为0说明出错）</p>
 <p>偶校验： <u>0</u>1001101 ····· <u>1</u>1010111 （异或结果为1说明出错）</p>
-<p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为奇数情况下的错误，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。1个校验位只能携带 true or false 2种状态信息，不能纠正错误。</p>
+<p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为奇数情况下的错误，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。只有1个校验位，故只能携带 true or false 2种状态信息，不能纠正错误。</p>
 <h3 id="海明校验码"><a href="#海明校验码" class="headerlink" title="海明校验码"></a>海明校验码</h3>
     </div>
 
