@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204112630157.png">
 <meta property="og:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204143620554.png">
 <meta property="article:published_time" content="2021-12-03T13:55:46.000Z">
-<meta property="article:modified_time" content="2021-12-06T02:47:57.608Z">
+<meta property="article:modified_time" content="2021-12-06T17:12:53.094Z">
 <meta property="article:author" content="Kusanagi">
 <meta property="article:tag" content="计算机">
 <meta property="article:tag" content="学习">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-06 10:47:57" itemprop="dateModified" datetime="2021-12-06T10:47:57+08:00">2021-12-06</time>
+                <time title="修改时间：2021-12-07 01:12:53" itemprop="dateModified" datetime="2021-12-07T01:12:53+08:00">2021-12-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -453,18 +453,95 @@
 <p>奇校验： <u>1</u>1001101 ····· <u>0</u>1010111 （异或结果为0说明出错）</p>
 <p>偶校验： <u>0</u>1001101 ····· <u>1</u>1010111 （异或结果为1说明出错）</p>
 <p>上面我们可以数出“1”的个数来得到对应的奇偶校验码，那么<strong>机器</strong>是如何得到奇偶校验检错码的呢？？（采用异或操作）</p>
-<p>对于机器，它算出奇校验检错码应该是：(这里注意校验检错码并不是校验位，注意区分G和C的含义)<br>$$<br>G_奇 = \overline{C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n}<br>$$<br>偶校验检错码：<br>$$<br>G_偶 = C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n<br>$$<br>$$<br>X_1,X_2,…,X_n表示被校验的数据，C为校验位，G_{奇/偶} = 0表示数据正常，否则表示出错<br>$$</p>
+<p>对于机器，它算出的(这里注意<strong>指误码</strong>并不是<strong>校验位</strong>，注意区分G和C的含义)</p>
+<p>奇校验<strong>指误码</strong>：<br>$$<br>G_奇 = \overline{C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n}<br>$$<br>偶校验<strong>指误码</strong>：<br>$$<br>G_偶 = C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n<br>$$<br>$$<br>X_1,X_2,…,X_n表示被校验的数据，C为校验位，当G_{奇/偶} = 0表示数据正常(并不可证明数据无错误!)，否则表示出错<br>$$</p>
 <p><strong>Question: 奇/偶校验码的码距为？</strong></p>
 <blockquote>
 <p>Answer：<strong>一定为2。</strong>一般地，比如8421码：0000，0001，…，1111，奇偶校验就是一个码组（如8421）内的任意2个有效编码间的不同位数（因为是任意的2个，所以在8421中取0000和0001只有1位不同），码距为1。加上奇偶校验后，使1的个数变为奇数或偶数（如0001变00010为奇，变00011为偶），此码组都这样编码（奇校验：00001，00010，…，11111）码距最小为2。</p>
 </blockquote>
-<p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为奇数情况下的错误，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。只有1个校验位，故只能携带 true or false 2种状态信息，只能检测奇数个错误，不能纠正错误。</p>
+<p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为<strong>奇数情况下的错误</strong>，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。只有1个校验位，故只能携带 true or false 2种状态信息，<strong>只能检测奇数个错误，不能纠正错误</strong>。</p>
 <p>到这里你可能会有个疑问(゜▽゜？)，为什么奇偶校验码的码距为2，却可以检测出1、3、…、2n + 1 个错误呢？公式不是说好了应该只能检测出1个错误嘛？↓<br>$$<br>码距 \geq e + 1; (可检测 e 个错误)<br>$$</p>
 <ul>
 <li>其实并不矛盾，我们来看看码距的定义：<em>一种编码方案可能有若干个合法码字，各合法码字间的<strong>最小距离</strong>称为“码距”。</em>我们举例一种编码方案例如：0001,0010,0100,1100 显然这个编码方案的码距为 2 ，那么可以知道，这组码字如果出现一个错误，都可以检测出来，例如第一个码字出现错误00<u>1</u>1，那么00<u>1</u>1就不在此编码方案中，检测到错误。如果出现3个错误，例如第一个码字变为了<u>11</u>0<u>0</u>，那么它即与最后一个码字是相同的，不能检测出错误。</li>
 <li>为什么奇偶校验码码距也为2，可以检测出奇数个错误呢？上述的编码方案，它并不是奇偶校验码，码字“1100”有偶数个“1”。区别就在这里！假如编码方案变为：0001,0010,0100,1000，这样每个码字都是奇校验码，当发生了3（or 2n+1）个错误，那么那个码字一定会变成偶数个“1”，所以说上述公式是针对一般码字而言的。</li>
 </ul>
-<h3 id="CRC（循环冗余）校验码"><a href="#CRC（循环冗余）校验码" class="headerlink" title="CRC（循环冗余）校验码"></a>CRC（循环冗余）校验码</h3>
+<h3 id="海明校验码"><a href="#海明校验码" class="headerlink" title="海明校验码"></a>海明校验码</h3><p>海明校验：</p>
+<ul>
+<li>是一种多重分组奇偶校验</li>
+<li>将代码组织为若干分组，每组进行奇偶校验</li>
+<li>能够检验是否出错，并能定位出错位</li>
+</ul>
+<h4 id="海明码设计思路"><a href="#海明码设计思路" class="headerlink" title="海明码设计思路"></a>海明码设计思路</h4><p>待编码信息n位，分成k组，每组1各校验位</p>
+<p>校验码位数：k位</p>
+<p>海明编码总长：N = n + k位</p>
+<p>海明编码时：各组单独进行奇偶校验编码，以确定各组的校验位。</p>
+<p>代码检验时：每组能产生1个指误码 <strong>G</strong> </p>
+<ul>
+<li>r位指误码 比如：G<sub>3</sub>G<sub>2</sub>G<sub>1</sub>G<sub>0</sub></li>
+<li>2<sup>r</sup>种可能的指误代码，如0000、0001、0010、…</li>
+</ul>
+<p>指误码 G 全为 0  &hArr; 海明编码无错，其余(2<sup>k</sup>-1)种情况均表示编码出错<br>$$<br>而各参数应满足：N = n + k \leq 2^k - 1<br>$$<br>例如k = 4，则需要r&gt;=3满足上述定理，可组成7位海明码，n和k的一些对应取值关系：</p>
+<table>
+<thead>
+<tr>
+<th align="left">n</th>
+<th align="left">1</th>
+<th>2-4</th>
+<th>5-11</th>
+<th>12-26</th>
+<th>27-57</th>
+<th>58-120</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">k</td>
+<td align="left">2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+</tr>
+</tbody></table>
+<h4 id="海明码求解步骤"><a href="#海明码求解步骤" class="headerlink" title="海明码求解步骤"></a>海明码求解步骤</h4><p>举例：信息位为0101</p>
+<ol>
+<li><p>确定海明码的位数，由上述 n 与 k 的关系，可知 n = 4,得k = 3，设信息位为D<sub>1</sub>D<sub>2</sub>D<sub>3</sub>D<sub>4</sub>(0101)，共 4 位，校验位 P<sub>1</sub>P<sub>2</sub>P<sub>3</sub> 共 3 位，对应海明码为 H<sub>1</sub>H<sub>2</sub>H<sub>3</sub>H<sub>4</sub>H<sub>5</sub>H<sub>6</sub>H<sub>7</sub> 。</p>
+</li>
+<li><p>确定校验位的分布：校验位 P<sub>i</sub>放在海明位号为2<sup>i-1</sup>的位置上，信息位按顺序放到其余位置。</p>
+<table>
+<thead>
+<tr>
+<th>H<sub>1</sub></th>
+<th>H<sub>2</sub></th>
+<th>H<sub>3</sub></th>
+<th>H<sub>4</sub></th>
+<th>H<sub>5</sub></th>
+<th>H<sub>6</sub></th>
+<th>H<sub>7</sub></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P<sub>1</sub></td>
+<td>P<sub>2</sub></td>
+<td>D<sub>1</sub></td>
+<td>P<sub>3</sub></td>
+<td>D<sub>2</sub></td>
+<td>D<sub>3</sub></td>
+<td>D<sub>4</sub></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0</td>
+<td></td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+
     </div>
 
     
@@ -545,7 +622,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%9B%E4%BD%8D%E8%AE%A1%E6%95%B0%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">一、进位计数制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81BCD%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">二、BCD码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8421%E7%A0%81%EF%BC%88%E6%9C%80%E5%B8%B8%E7%94%A8%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">8421码（最常用）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%993%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">余3码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2421%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">2421码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.</span> <span class="nav-text">三、字符与字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E4%B8%8EASCII%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">字符编码与ASCII码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%89%E5%AD%97%E7%9A%84%E8%A1%A8%E7%A4%BA%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">汉字的表示与编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">四、校验码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">奇偶校验码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CRC%EF%BC%88%E5%BE%AA%E7%8E%AF%E5%86%97%E4%BD%99%EF%BC%89%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">CRC（循环冗余）校验码</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%9B%E4%BD%8D%E8%AE%A1%E6%95%B0%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">一、进位计数制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81BCD%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">二、BCD码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8421%E7%A0%81%EF%BC%88%E6%9C%80%E5%B8%B8%E7%94%A8%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">8421码（最常用）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%993%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">余3码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2421%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">2421码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.</span> <span class="nav-text">三、字符与字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E4%B8%8EASCII%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">字符编码与ASCII码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%89%E5%AD%97%E7%9A%84%E8%A1%A8%E7%A4%BA%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">汉字的表示与编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">四、校验码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">奇偶校验码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%B7%E6%98%8E%E6%A0%A1%E9%AA%8C%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">海明校验码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%B7%E6%98%8E%E7%A0%81%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-number">4.2.1.</span> <span class="nav-text">海明码设计思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%B7%E6%98%8E%E7%A0%81%E6%B1%82%E8%A7%A3%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.2.2.</span> <span class="nav-text">海明码求解步骤</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
