@@ -46,16 +46,190 @@
     <url>/2021/12/02/%E4%BA%8C%E5%8F%89%E6%A0%91%E5%9B%9B%E7%A7%8D%E9%81%8D%E5%8E%86%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E6%96%B9%E5%BC%8F/</url>
     <content><![CDATA[<h2 id="一、前序、中序和后续遍历"><a href="#一、前序、中序和后续遍历" class="headerlink" title="一、前序、中序和后续遍历"></a>一、前序、中序和后续遍历</h2><span id="more"></span>
 
-<h3 id="需用到栈："><a href="#需用到栈：" class="headerlink" title="需用到栈："></a>需用到栈：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">StackNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; StackNode, *LinkStackPtr;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    LinkStackPtr top;</span><br><span class="line">    <span class="keyword">int</span> count;</span><br><span class="line">&#125; LinkStack;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitStack</span><span class="params">(LinkStack *S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S-&gt;top = <span class="literal">NULL</span>;</span><br><span class="line">    S-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Push</span><span class="params">(LinkStack *S, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == e)</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">    LinkStackPtr s = (LinkStackPtr)<span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(StackNode));   <span class="comment">//s指向新栈结点的指针</span></span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    s-&gt;next = S-&gt;top; <span class="comment">/* 把当前的栈顶元素赋值给新结点的直接后继 */</span></span><br><span class="line">    S-&gt;top = s;       <span class="comment">/* 将新的结点s赋值给栈顶指针 */</span></span><br><span class="line">    S-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">Pop</span><span class="params">(LinkStack *S, BiTree *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    LinkStackPtr p;</span><br><span class="line">    <span class="keyword">if</span> ((*S).count == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">	*e = S-&gt;top-&gt;data;</span><br><span class="line">    p = S-&gt;top;            <span class="comment">/* 将栈顶结点赋值给p */</span></span><br><span class="line">    S-&gt;top = S-&gt;top-&gt;next; <span class="comment">/* 使得栈顶指针下移一位，指向后一结点 */</span></span><br><span class="line">    <span class="built_in">free</span>(p);               <span class="comment">/* 释放结点p */</span></span><br><span class="line">    S-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">GetTop</span><span class="params">(LinkStack S, BiTree &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S.top == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        p = S.top-&gt;data;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="需用到栈："><a href="#需用到栈：" class="headerlink" title="需用到栈："></a>需用到栈：</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">StackNode</span>
+<span class="token punctuation">&#123;</span>
+    BiTree data<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> <span class="token class-name">StackNode</span> <span class="token operator">*</span>next<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> StackNode<span class="token punctuation">,</span> <span class="token operator">*</span>LinkStackPtr<span class="token punctuation">;</span>
 
-<h3 id="前序遍历实现："><a href="#前序遍历实现：" class="headerlink" title="前序遍历实现："></a>前序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：前序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PreOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的右子树</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span>
+<span class="token punctuation">&#123;</span>
+    LinkStackPtr top<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> count<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> LinkStack<span class="token punctuation">;</span>
 
-<h3 id="中序遍历实现："><a href="#中序遍历实现：" class="headerlink" title="中序遍历实现："></a>中序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：中序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	BiTree p = T;</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//?  左子树不为空</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);	<span class="comment">//?  栈存放各子树的根结点</span></span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//?  左子树空，弹出栈顶元素并输出，转为右子树继续循环</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,p-&gt;data);</span><br><span class="line">			p = p-&gt;rchild;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="comment">//?  当左子树为空，且栈空，退出循环</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+Status <span class="token function">InitStack</span><span class="token punctuation">(</span>LinkStack <span class="token operator">*</span>S<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    S<span class="token operator">-></span>top <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    S<span class="token operator">-></span>count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">Push</span><span class="token punctuation">(</span>LinkStack <span class="token operator">*</span>S<span class="token punctuation">,</span> BiTree e<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token constant">NULL</span> <span class="token operator">==</span> e<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+    LinkStackPtr s <span class="token operator">=</span> <span class="token punctuation">(</span>LinkStackPtr<span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>StackNode<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//s指向新栈结点的指针</span>
+    s<span class="token operator">-></span>data <span class="token operator">=</span> e<span class="token punctuation">;</span>
+    s<span class="token operator">-></span>next <span class="token operator">=</span> S<span class="token operator">-></span>top<span class="token punctuation">;</span> <span class="token comment">/* 把当前的栈顶元素赋值给新结点的直接后继 */</span>
+    S<span class="token operator">-></span>top <span class="token operator">=</span> s<span class="token punctuation">;</span>       <span class="token comment">/* 将新的结点s赋值给栈顶指针 */</span>
+    S<span class="token operator">-></span>count<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">Pop</span><span class="token punctuation">(</span>LinkStack <span class="token operator">*</span>S<span class="token punctuation">,</span> BiTree <span class="token operator">*</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    LinkStackPtr p<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">.</span>count <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+    <span class="token operator">*</span>e <span class="token operator">=</span> S<span class="token operator">-></span>top<span class="token operator">-></span>data<span class="token punctuation">;</span>
+    p <span class="token operator">=</span> S<span class="token operator">-></span>top<span class="token punctuation">;</span>            <span class="token comment">/* 将栈顶结点赋值给p */</span>
+    S<span class="token operator">-></span>top <span class="token operator">=</span> S<span class="token operator">-></span>top<span class="token operator">-></span>next<span class="token punctuation">;</span> <span class="token comment">/* 使得栈顶指针下移一位，指向后一结点 */</span>
+    <span class="token function">free</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>               <span class="token comment">/* 释放结点p */</span>
+    S<span class="token operator">-></span>count<span class="token operator">--</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">GetTop</span><span class="token punctuation">(</span>LinkStack S<span class="token punctuation">,</span> BiTree <span class="token operator">&amp;</span>p<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>S<span class="token punctuation">.</span>top <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+    <span class="token keyword">else</span>
+        p <span class="token operator">=</span> S<span class="token punctuation">.</span>top<span class="token operator">-></span>data<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="后序遍历实现："><a href="#后序遍历实现：" class="headerlink" title="后序遍历实现："></a>后序遍历实现：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//*  初始条件：二叉树T存在</span></span><br><span class="line"><span class="comment">//todo  操作结果：后序非递归遍历T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PostOrderTraverse_2</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p = T, r = <span class="literal">NULL</span>;</span><br><span class="line">	LinkStack S;</span><br><span class="line">	<span class="built_in">InitStack</span>(&amp;S);</span><br><span class="line">	<span class="keyword">while</span>(p || S.count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p)		<span class="comment">//todo  走到最左边</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">Push</span>(&amp;S, p);</span><br><span class="line">			p = p-&gt;lchild;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">GetTop</span>(S, p);</span><br><span class="line">			<span class="keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)		<span class="comment">//*  若右子树存在, 且未被访问过</span></span><br><span class="line">				p = p-&gt;rchild;		<span class="comment">//todo 转向右边</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">Pop</span>(&amp;S, &amp;p);</span><br><span class="line">				<span class="built_in">visit</span>(p-&gt;data);</span><br><span class="line">				r = p;		<span class="comment">//*  记录最近访问过的结点</span></span><br><span class="line">				p = <span class="literal">NULL</span>;	<span class="comment">//?  将p置空</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="comment">//else</span></span><br><span class="line">	&#125;<span class="comment">//while</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="二、层次遍历"><a href="#二、层次遍历" class="headerlink" title="二、层次遍历"></a>二、层次遍历</h2><h3 id="需用到队列："><a href="#需用到队列：" class="headerlink" title="需用到队列："></a>需用到队列：</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    BiTree *data;</span><br><span class="line">    <span class="keyword">int</span> front; <span class="comment">/* 头指针 */</span></span><br><span class="line">    <span class="keyword">int</span> rear;  <span class="comment">/* 尾指针，若队列不空，指向队列尾元素的下一个位置 */</span></span><br><span class="line">&#125; SqQueue;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitQueue</span><span class="params">(SqQueue &amp;Q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Q.data = (BiTree *)<span class="built_in">malloc</span>((MAXSIZE+<span class="number">1</span>) * <span class="built_in"><span class="keyword">sizeof</span></span>(BiTree));</span><br><span class="line">    <span class="keyword">if</span>(!Q.data)</span><br><span class="line">        <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">    Q.front = <span class="number">0</span>;</span><br><span class="line">    Q.rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">EnQueue</span><span class="params">(SqQueue &amp;Q, BiTree e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Q.rear + <span class="number">1</span>) % MAXSIZE == Q.front) <span class="comment">/* 队列满的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    Q.data[Q.rear] = e;              <span class="comment">/* 将元素e赋值给队尾 */</span></span><br><span class="line">    Q.rear = (Q.rear + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* rear指针向后移一位置， */</span></span><br><span class="line">                                       <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">DeQueue</span><span class="params">(SqQueue &amp;Q, BiTree &amp;e)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Q.front == Q.rear) <span class="comment">/* 队列空的判断 */</span></span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    e = Q.data[Q.front];              <span class="comment">/* 将队头元素赋值给e */</span></span><br><span class="line">    Q.front = (Q.front + <span class="number">1</span>) % MAXSIZE; <span class="comment">/* front指针向后移一位置， */</span></span><br><span class="line">                                         <span class="comment">/* 若到最后则转到数组头部 */</span></span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Status <span class="title">QueueEmpty</span><span class="params">(SqQueue Q)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="前序遍历实现："><a href="#前序遍历实现：" class="headerlink" title="前序遍历实现："></a>前序遍历实现：</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//*  初始条件：二叉树T存在</span>
+<span class="token comment">//todo  操作结果：前序非递归遍历T</span>
+<span class="token keyword">void</span> <span class="token function">PreOrderTraverse_2</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    LinkStack S<span class="token punctuation">;</span>
+    <span class="token function">InitStack</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    BiTree p <span class="token operator">=</span> T<span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>p <span class="token operator">||</span> S<span class="token punctuation">.</span>count <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>        <span class="token comment">//?  左子树不为空</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%c"</span><span class="token punctuation">,</span> p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Push</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//?  栈存放各子树的右子树</span>
+            p <span class="token operator">=</span> p<span class="token operator">-></span>lchild<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">Pop</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            p <span class="token operator">=</span> p<span class="token operator">-></span>rchild<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token comment">//?  当左子树为空，且栈空，退出循环</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="层次遍历实现"><a href="#层次遍历实现" class="headerlink" title="层次遍历实现"></a>层次遍历实现</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//todo  操作结果：层次遍历T </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LevelOrderTraverse</span><span class="params">(BiTree T)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	BiTree p;</span><br><span class="line">	SqQueue qu;	<span class="comment">//使用队列来层次遍历二叉树</span></span><br><span class="line">	<span class="built_in">InitQueue</span>(qu);</span><br><span class="line">	<span class="built_in">EnQueue</span>(qu, T);</span><br><span class="line">	<span class="keyword">while</span>(!<span class="built_in">QueueEmpty</span>(qu))		<span class="comment">//队列非空/*  */</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">DeQueue</span>(qu, p);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, p-&gt;data);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;lchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;lchild);</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;rchild)</span><br><span class="line">			<span class="built_in">EnQueue</span>(qu, p-&gt;rchild);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="中序遍历实现："><a href="#中序遍历实现：" class="headerlink" title="中序遍历实现："></a>中序遍历实现：</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//*  初始条件：二叉树T存在</span>
+<span class="token comment">//todo  操作结果：中序非递归遍历T</span>
+<span class="token keyword">void</span> <span class="token function">InOrderTraverse_2</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    LinkStack S<span class="token punctuation">;</span>
+    <span class="token function">InitStack</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    BiTree p <span class="token operator">=</span> T<span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>p <span class="token operator">||</span> S<span class="token punctuation">.</span>count <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>        <span class="token comment">//?  左子树不为空</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">Push</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//?  栈存放各子树的根结点</span>
+            p <span class="token operator">=</span> p<span class="token operator">-></span>lchild<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">//?  左子树空，弹出栈顶元素并输出，转为右子树继续循环</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">Pop</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%c"</span><span class="token punctuation">,</span>p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            p <span class="token operator">=</span> p<span class="token operator">-></span>rchild<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token comment">//?  当左子树为空，且栈空，退出循环</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="后序遍历实现："><a href="#后序遍历实现：" class="headerlink" title="后序遍历实现："></a>后序遍历实现：</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//*  初始条件：二叉树T存在</span>
+<span class="token comment">//todo  操作结果：后序非递归遍历T</span>
+<span class="token keyword">void</span> <span class="token function">PostOrderTraverse_2</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    BiTree p <span class="token operator">=</span> T<span class="token punctuation">,</span> r <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    LinkStack S<span class="token punctuation">;</span>
+    <span class="token function">InitStack</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>p <span class="token operator">||</span> S<span class="token punctuation">.</span>count <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>        <span class="token comment">//todo  走到最左边</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">Push</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            p <span class="token operator">=</span> p<span class="token operator">-></span>lchild<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token function">GetTop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">-></span>rchild <span class="token operator">&amp;&amp;</span> p<span class="token operator">-></span>rchild <span class="token operator">!=</span> r<span class="token punctuation">)</span>        <span class="token comment">//*  若右子树存在, 且未被访问过</span>
+                p <span class="token operator">=</span> p<span class="token operator">-></span>rchild<span class="token punctuation">;</span>        <span class="token comment">//todo 转向右边</span>
+            <span class="token keyword">else</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token function">Pop</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">visit</span><span class="token punctuation">(</span>p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                r <span class="token operator">=</span> p<span class="token punctuation">;</span>        <span class="token comment">//*  记录最近访问过的结点</span>
+                p <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>    <span class="token comment">//?  将p置空</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token comment">//else</span>
+    <span class="token punctuation">&#125;</span><span class="token comment">//while</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="二、层次遍历"><a href="#二、层次遍历" class="headerlink" title="二、层次遍历"></a>二、层次遍历</h2><h3 id="需用到队列："><a href="#需用到队列：" class="headerlink" title="需用到队列："></a>需用到队列：</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span>
+<span class="token punctuation">&#123;</span>
+    BiTree <span class="token operator">*</span>data<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> front<span class="token punctuation">;</span> <span class="token comment">/* 头指针 */</span>
+    <span class="token keyword">int</span> rear<span class="token punctuation">;</span>  <span class="token comment">/* 尾指针，若队列不空，指向队列尾元素的下一个位置 */</span>
+<span class="token punctuation">&#125;</span> SqQueue<span class="token punctuation">;</span>
+
+Status <span class="token function">InitQueue</span><span class="token punctuation">(</span>SqQueue <span class="token operator">&amp;</span>Q<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    Q<span class="token punctuation">.</span>data <span class="token operator">=</span> <span class="token punctuation">(</span>BiTree <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token punctuation">(</span>MAXSIZE<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>BiTree<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>Q<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span>OVERFLOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Q<span class="token punctuation">.</span>front <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    Q<span class="token punctuation">.</span>rear <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">EnQueue</span><span class="token punctuation">(</span>SqQueue <span class="token operator">&amp;</span>Q<span class="token punctuation">,</span> BiTree e<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>Q<span class="token punctuation">.</span>rear <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">%</span> MAXSIZE <span class="token operator">==</span> Q<span class="token punctuation">.</span>front<span class="token punctuation">)</span> <span class="token comment">/* 队列满的判断 */</span>
+        <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+    Q<span class="token punctuation">.</span>data<span class="token punctuation">[</span>Q<span class="token punctuation">.</span>rear<span class="token punctuation">]</span> <span class="token operator">=</span> e<span class="token punctuation">;</span>              <span class="token comment">/* 将元素e赋值给队尾 */</span>
+    Q<span class="token punctuation">.</span>rear <span class="token operator">=</span> <span class="token punctuation">(</span>Q<span class="token punctuation">.</span>rear <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">%</span> MAXSIZE<span class="token punctuation">;</span> <span class="token comment">/* rear指针向后移一位置， */</span>
+                                       <span class="token comment">/* 若到最后则转到数组头部 */</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">DeQueue</span><span class="token punctuation">(</span>SqQueue <span class="token operator">&amp;</span>Q<span class="token punctuation">,</span> BiTree <span class="token operator">&amp;</span>e<span class="token punctuation">)</span>
+
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>Q<span class="token punctuation">.</span>front <span class="token operator">==</span> Q<span class="token punctuation">.</span>rear<span class="token punctuation">)</span> <span class="token comment">/* 队列空的判断 */</span>
+        <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+    e <span class="token operator">=</span> Q<span class="token punctuation">.</span>data<span class="token punctuation">[</span>Q<span class="token punctuation">.</span>front<span class="token punctuation">]</span><span class="token punctuation">;</span>              <span class="token comment">/* 将队头元素赋值给e */</span>
+    Q<span class="token punctuation">.</span>front <span class="token operator">=</span> <span class="token punctuation">(</span>Q<span class="token punctuation">.</span>front <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">%</span> MAXSIZE<span class="token punctuation">;</span> <span class="token comment">/* front指针向后移一位置， */</span>
+                                         <span class="token comment">/* 若到最后则转到数组头部 */</span>
+    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+Status <span class="token function">QueueEmpty</span><span class="token punctuation">(</span>SqQueue Q<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="层次遍历实现"><a href="#层次遍历实现" class="headerlink" title="层次遍历实现"></a>层次遍历实现</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//todo  操作结果：层次遍历T </span>
+<span class="token keyword">void</span> <span class="token function">LevelOrderTraverse</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    BiTree p<span class="token punctuation">;</span>
+    SqQueue qu<span class="token punctuation">;</span>    <span class="token comment">//使用队列来层次遍历二叉树</span>
+    <span class="token function">InitQueue</span><span class="token punctuation">(</span>qu<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">EnQueue</span><span class="token punctuation">(</span>qu<span class="token punctuation">,</span> T<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">QueueEmpty</span><span class="token punctuation">(</span>qu<span class="token punctuation">)</span><span class="token punctuation">)</span>        <span class="token comment">//队列非空/*  */</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token function">DeQueue</span><span class="token punctuation">(</span>qu<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%c"</span><span class="token punctuation">,</span> p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">-></span>lchild<span class="token punctuation">)</span>
+            <span class="token function">EnQueue</span><span class="token punctuation">(</span>qu<span class="token punctuation">,</span> p<span class="token operator">-></span>lchild<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">-></span>rchild<span class="token punctuation">)</span>
+            <span class="token function">EnQueue</span><span class="token punctuation">(</span>qu<span class="token punctuation">,</span> p<span class="token operator">-></span>rchild<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 ]]></content>
       <categories>
@@ -69,7 +243,10 @@
   <entry>
     <title>数制与编码</title>
     <url>/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/</url>
-    <content><![CDATA[<h2 id="一、进位计数制"><a href="#一、进位计数制" class="headerlink" title="一、进位计数制"></a>一、进位计数制</h2><p>二进制 &lt;–&gt; 八进制：  3位一组</p>
+    <content><![CDATA[<h2 id="一、进位计数制"><a href="#一、进位计数制" class="headerlink" title="一、进位计数制"></a>一、进位计数制</h2><span id="more"></span>
+
+
+<p>二进制 &lt;–&gt; 八进制：  3位一组</p>
 <p>二进制 &lt;–&gt; 十六进制  4位一组</p>
 <p>十进制 –&gt; 任意进制</p>
 <p>整数部分：除基取余法</p>
@@ -258,8 +435,8 @@
 <p>奇校验： <u>1</u>1001101 ····· <u>0</u>1010111 （异或结果为0说明出错）</p>
 <p>偶校验： <u>0</u>1001101 ····· <u>1</u>1010111 （异或结果为1说明出错）</p>
 <p>上面我们可以数出“1”的个数来得到对应的奇偶校验码，那么<strong>机器</strong>是如何得到奇偶校验检错码的呢？？（采用异或操作）</p>
-<p>对于机器，它算出的(这里注意<strong>指误码</strong>并不是<strong>校验位</strong>，注意区分G和C的含义)</p>
-<p>奇校验<strong>指误码</strong>：<br>$$<br>G_奇 = \overline{C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n}<br>$$<br>偶校验<strong>指误码</strong>：<br>$$<br>G_偶 = C \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n<br>$$<br>$$<br>X_1,X_2,…,X_n表示被校验的数据，C为校验位，当G_{奇/偶} = 0表示数据正常(并不可证明数据无错误!)，否则表示出错<br>$$</p>
+<p>对于机器，它算出的(这里注意<strong>指误码</strong>并不是<strong>校验位</strong>，注意区分S和P的含义)</p>
+<p>奇校验<strong>指误码</strong>：<br>$$<br>S_奇 = \overline{P \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n}<br>$$<br>偶校验<strong>指误码</strong>：<br>$$<br>S_偶 = P \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n<br>$$<br>$$<br>X_1,X_2,…,X_n表示被校验的数据，P为校验位，当S_{奇/偶} = 0表示数据正常(并不可证明数据无错误!)，否则表示出错<br>$$</p>
 <p><strong>Question: 奇/偶校验码的码距为？</strong></p>
 <blockquote>
 <p>Answer：<strong>一定为2。</strong>一般地，比如8421码：0000，0001，…，1111，奇偶校验就是一个码组（如8421）内的任意2个有效编码间的不同位数（因为是任意的2个，所以在8421中取0000和0001只有1位不同），码距为1。加上奇偶校验后，使1的个数变为奇数或偶数（如0001变00010为奇，变00011为偶），此码组都这样编码（奇校验：00001，00010，…，11111）码距最小为2。</p>
@@ -280,12 +457,12 @@
 <p>校验码位数：k位</p>
 <p>海明编码总长：N = n + k位</p>
 <p>海明编码时：各组单独进行奇偶校验编码，以确定各组的校验位。</p>
-<p>代码检验时：每组能产生1个指误码 <strong>G</strong> </p>
+<p>代码检验时：每组能产生1个指误码 <strong>S</strong> </p>
 <ul>
-<li>r位指误码 比如：G<sub>3</sub>G<sub>2</sub>G<sub>1</sub>G<sub>0</sub></li>
+<li>r位指误码 比如：S<sub>3</sub>S<sub>2</sub>S<sub>1</sub>S<sub>0</sub></li>
 <li>2<sup>r</sup>种可能的指误代码，如0000、0001、0010、…</li>
 </ul>
-<p>指误码 G 全为 0  &hArr; 海明编码无错，其余(2<sup>k</sup>-1)种情况均表示编码出错<br>$$<br>而各参数应满足：N = n + k \leq 2^k - 1<br>$$<br>例如k = 4，则需要r&gt;=3满足上述定理，可组成7位海明码，n和k的一些对应取值关系：</p>
+<p>指误码 S 全为 0  &hArr; 海明编码无错，其余(2<sup>k</sup>-1)种情况均表示编码出错<br>$$<br>而各参数应满足：N = n + k \leq 2^k - 1<br>$$<br>例如k = 4，则需要r&gt;=3满足上述定理，可组成7位海明码，n和k的一些对应取值关系：</p>
 <table>
 <thead>
 <tr>
@@ -308,44 +485,185 @@
 <td>7</td>
 </tr>
 </tbody></table>
-<h4 id="海明码求解步骤"><a href="#海明码求解步骤" class="headerlink" title="海明码求解步骤"></a>海明码求解步骤</h4><p>举例：信息位为0101</p>
+<h4 id="海明码求解步骤"><a href="#海明码求解步骤" class="headerlink" title="海明码求解步骤"></a>海明码求解步骤</h4><p>举例：信息位为1010</p>
 <ol>
-<li><p>确定海明码的位数，由上述 n 与 k 的关系，可知 n = 4,得k = 3，设信息位为D<sub>1</sub>D<sub>2</sub>D<sub>3</sub>D<sub>4</sub>(0101)，共 4 位，校验位 P<sub>1</sub>P<sub>2</sub>P<sub>3</sub> 共 3 位，对应海明码为 H<sub>1</sub>H<sub>2</sub>H<sub>3</sub>H<sub>4</sub>H<sub>5</sub>H<sub>6</sub>H<sub>7</sub> 。</p>
+<li><p>确定海明码的位数，由上述 n 与 k 的关系，可知 n = 4,得k = 3，设信息位为<strong>D<sub>4</sub>D<sub>3</sub>D<sub>2</sub>D<sub>1</sub></strong>(1010)，共 4 位，校验位 P<sub>1</sub>P<sub>2</sub>P<sub>3</sub> 共 3 位，对应海明码为 H<sub>7</sub>H<sub>6</sub>H<sub>5</sub>H<sub>4</sub>H<sub>3</sub>H<sub>2</sub>H<sub>1</sub> 。</p>
 </li>
-<li><p>确定校验位的分布：校验位 P<sub>i</sub>放在海明位号为2<sup>i-1</sup>的位置上，信息位按顺序放到其余位置。</p>
+<li><p>确定校验位的分布：校验位 P<sub>i</sub> 放在海明位号为2<sup>i-1</sup>的位置上，信息位按顺序放到其余位置。</p>
 <table>
 <thead>
 <tr>
-<th>H<sub>1</sub></th>
-<th>H<sub>2</sub></th>
-<th>H<sub>3</sub></th>
-<th>H<sub>4</sub></th>
-<th>H<sub>5</sub></th>
-<th>H<sub>6</sub></th>
 <th>H<sub>7</sub></th>
+<th>H<sub>6</sub></th>
+<th>H<sub>5</sub></th>
+<th>H<sub>4</sub></th>
+<th>H<sub>3</sub></th>
+<th>H<sub>2</sub></th>
+<th>H<sub>1</sub></th>
 </tr>
 </thead>
 <tbody><tr>
-<td>P<sub>1</sub></td>
-<td>P<sub>2</sub></td>
-<td>D<sub>1</sub></td>
-<td>P<sub>3</sub></td>
-<td>D<sub>2</sub></td>
-<td>D<sub>3</sub></td>
 <td>D<sub>4</sub></td>
+<td>D<sub>3</sub></td>
+<td>D<sub>2</sub></td>
+<td>P<sub>3</sub></td>
+<td>D<sub>1</sub></td>
+<td>P<sub>2</sub></td>
+<td>P<sub>1</sub></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td>0</td>
-<td></td>
 <td>1</td>
 <td>0</td>
 <td>1</td>
+<td><u>0</u></td>
+<td>0</td>
+<td><u>1</u></td>
+<td><u>0</u></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>分组以形成校验关系</p>
+<p>每个数据位用多个校验位进行校验，且应满足条件：<strong>被校验数据位的海明位号等于校验该数据位的各校验位海明位号之和。</strong></p>
+<p>所以D<sub>1</sub>应该由 P<sub>2 </sub>P<sub>1 </sub>校验，D<sub>2</sub>应该由 P<sub>3 </sub>P<sub>1 </sub>校验，D<sub>3</sub>应该由 P<sub>3 </sub>P<sub>2 </sub>校验，D<sub>4</sub>应该由 P<sub>3 </sub>P<sub>2 </sub>P<sub>1 </sub>校验</p>
+<p>故分组如下：</p>
+<ul>
+<li>第 1 组：P<sub>1 </sub>D<sub>1</sub> D<sub>2</sub> D<sub>4</sub> （D<sub>1</sub> D<sub>2</sub> D<sub>4</sub> 都被 P<sub>1</sub> 所检验 ）</li>
+<li>第 2 组：P<sub>2 </sub>D<sub>1</sub> D<sub>3</sub> D<sub>4</sub> （D<sub>1</sub> D<sub>3</sub> D<sub>4</sub> 都被 P<sub>2</sub> 所检验 ）</li>
+<li>第 3 组：P<sub>3 </sub>D<sub>2</sub> D<sub>3</sub> D<sub>4</sub> （D<sub>2</sub> D<sub>3</sub> D<sub>4</sub> 都被 P<sub>3</sub> 所检验 ）</li>
+</ul>
+</li>
+<li><p>求校验位的值：（可采用下图所示的方法）</p>
+<p> <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" alt="image-20211207161718268"></p>
+</li>
+<li><p>纠错</p>
+</li>
+</ol>
+<p>（1）接收到：1010010</p>
+<table>
+<thead>
+<tr>
+<th>H<sub>7</sub></th>
+<th>H<sub>6</sub></th>
+<th>H<sub>5</sub></th>
+<th>H<sub>4</sub></th>
+<th>H<sub>3</sub></th>
+<th>H<sub>2</sub></th>
+<th>H<sub>1</sub></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D<sub>4</sub></td>
+<td>D<sub>3</sub></td>
+<td>D<sub>2</sub></td>
+<td>P<sub>3</sub></td>
+<td>D<sub>1</sub></td>
+<td>P<sub>2</sub></td>
+<td>P<sub>1</sub></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td><u>0</u></td>
+<td>0</td>
+<td><u>1</u></td>
+<td><u>0</u></td>
+</tr>
+</tbody></table>
+<p>校验方程：<br>$$<br>S_1 = P_1 \oplus D_1 \oplus D_2 \oplus D_4 = 0 \oplus 0 \oplus 1 \oplus 1 = 0<br>$$</p>
+<p>$$<br>S_2 = P_2 \oplus D_1 \oplus D_3 \oplus D_4 = 1 \oplus 0 \oplus 0 \oplus 1 = 0<br>$$</p>
+<p>$$<br>S_3 = P_3 \oplus D_2 \oplus D_3 \oplus D_4 = 0 \oplus 1 \oplus 0 \oplus 1 = 0<br>$$<br>数据无错误</p>
+<p>（2）接收到1<u>1</u>10010（D<sub>3 </sub>发生了跳变）</p>
+<p>校验方程：<br>$$<br>S_1 = P_1 \oplus D_1 \oplus D_2 \oplus D_4 = 0 \oplus 0 \oplus 1 \oplus 1 = 0<br>$$</p>
+<p>$$<br>S_2 = P_2 \oplus D_1 \oplus D_3 \oplus D_4 = 1 \oplus 0 \oplus \underline1 \oplus 1 = 1<br>$$</p>
+<p>$$<br>S_3 = P_3 \oplus D_2 \oplus D_3 \oplus D_4 = 0 \oplus 1 \oplus \underline1 \oplus 1 = 1<br>$$</p>
+<p>那么 我们由 S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 可以得到错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误</p>
+<p><strong>Question: 为何可以通过S<sub>3</sub>S<sub>2</sub>S<sub>1</sub>得到错误的位置？为何不是S<sub>1</sub>S<sub>2</sub>S<sub>3</sub>？</strong></p>
+<blockquote>
+<p>Answer: 我们分别把 P<sub>3</sub>P<sub>2</sub>P<sub>1 </sub> 放到 421 的位置（把 P<sub>i</sub> 放在2<sup>i-1</sup>的位置），我们可以把它理解成一种权重，与海明位号二进制表示的各个权重是一一对应的！回顾一下上面求校验位值的过程：</p>
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" alt="image-20211207161718268" style="zoom: 67%;" />
+
+<p>校验方程 S<sub>i</sub> 中包含的校验位即是 P<sub>i</sub> ，按从大到小的权重排列即是：S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> 。所以上述发生了错误对于各校验方程的值： S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，即指出错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误。</p>
+</blockquote>
+<h4 id="（补充）海明码的检错、纠错能力"><a href="#（补充）海明码的检错、纠错能力" class="headerlink" title="（补充）海明码的检错、纠错能力"></a>（补充）海明码的检错、纠错能力</h4><p>纠错能力 —— 1位</p>
+<p>检错能力 —— 2位</p>
+<ol>
+<li><p>但是海明码<strong>无法区分是1位错还是2位错</strong>，还是上面的例子，S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，错误的位置一定为第6位？还可以是P<sub>3</sub>P<sub>2</sub>发生了错误对不对www</p>
+</li>
+<li><p>为了区分 1 位错和 2 位错，常添加“全校验位”对整体进行偶校验。</p>
+<table>
+<thead>
+<tr>
+<th>H<sub>8</sub></th>
+<th>H<sub>7</sub></th>
+<th>H<sub>6</sub></th>
+<th>H<sub>5</sub></th>
+<th>H<sub>4</sub></th>
+<th>H<sub>3</sub></th>
+<th>H<sub>2</sub></th>
+<th>H<sub>1</sub></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P<sub>全</sub></td>
+<td>D<sub>4</sub></td>
+<td>D<sub>3</sub></td>
+<td>D<sub>2</sub></td>
+<td>P<sub>3</sub></td>
+<td>D<sub>1</sub></td>
+<td>P<sub>2</sub></td>
+<td>P<sub>1</sub></td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td><u>0</u></td>
+<td>0</td>
+<td><u>1</u></td>
+<td><u>0</u></td>
 </tr>
 </tbody></table>
 </li>
 </ol>
+<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 000 且全体偶校验成功 –→ 无错误</p>
+<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验失败 –→ 有1位错，纠正即可</p>
+<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验成功 –→ 有2位错，需重传</p>
+<h3 id="循环冗余校验码（CRC码）"><a href="#循环冗余校验码（CRC码）" class="headerlink" title="循环冗余校验码（CRC码）"></a>循环冗余校验码（CRC码）</h3><h4 id="循环冗余校验码的基本思想"><a href="#循环冗余校验码的基本思想" class="headerlink" title="循环冗余校验码的基本思想"></a>循环冗余校验码的基本思想</h4><ol>
+<li><p>数据发送、接受方约定一个“除数” </p>
+</li>
+<li><p>K个信息位 + R个校验位 作为“被除数”，添加校验位后需保证除法的余数为0</p>
+</li>
+<li><p>收到数据后，进行除法检查余数是否为0，若余数非0说明出错，则进行重传或纠错</p>
+</li>
+</ol>
+<img src="D:\Blog\source\_posts\数制与编码\image-20211207174813942.png" alt="image-20211207174813942" style="zoom: 80%;" />
+
+<p>例如：</p>
+<img src="D:\Blog\source\_posts\数制与编码\image-20211207174754144.png" alt="image-20211207174754144" style="zoom: 67%;" />
+
+
+
+<h4 id="CRC码求解步骤"><a href="#CRC码求解步骤" class="headerlink" title="CRC码求解步骤"></a>CRC码求解步骤</h4><p>eg.1 设生成多项式为<em>G</em>(<em>x</em>)=<em>x</em><sup>3</sup>+<em>x</em><sup>2</sup>+1，信息码为101001，求对应的CRC码。</p>
+<ol>
+<li><p>确定K、R以及生成多项式对应的二进制码</p>
+<p> K = 信息码的长度 = 6，R = 生成多项式最高次幂 = 3 –→ 校验码位数 N = K + R = 9</p>
+<p> 生成多项式<em>G</em>(<em>x</em>)=1·<em>x</em><sup>3 </sup> + 1·<em>x</em><sup>2</sup>+ 0·x + 1，对应二进制码<strong>1101</strong></p>
+</li>
+<li><p>移位，信息码左移R位，低位补0</p>
+</li>
+<li><p>相除，对移位后的信息码，用生成多项式进行模2除法，产生余数（注意体会“模2除”、“模2减”）</p>
+<p> <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207180100532.png" alt="image-20211207180100532"></p>
+<p> 对应的CRC码：101001 001</p>
+</li>
+<li><p>检错和纠错</p>
+</li>
+</ol>
+<p>  发送：101001001，记为C<sub>9</sub>C<sub>8</sub>C<sub>7</sub>C<sub>6</sub>C<sub>5</sub>C<sub>4</sub>C<sub>3</sub>C<sub>2</sub>C<sub>1</sub><br>  接收：101001001</p>
+<p>  用1101进行模2除 –→ 余数为000，代表没有出错</p>
+<p>  接收：101001011<br>  用1101进行模2除 –→ 余数为010，代表C<sub>2</sub>出错
+  </p>
 ]]></content>
       <categories>
         <category>计算机组成原理</category>
