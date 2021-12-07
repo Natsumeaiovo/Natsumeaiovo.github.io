@@ -638,10 +638,10 @@ Status <span class="token function">QueueEmpty</span><span class="token punctuat
 <li><p>收到数据后，进行除法检查余数是否为0，若余数非0说明出错，则进行重传或纠错</p>
 </li>
 </ol>
-<img src="D:\Blog\source\_posts\数制与编码\image-20211207174813942.png" alt="image-20211207174813942" style="zoom: 80%;" />
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174813942.png" alt="image-20211207174813942" style="zoom: 80%;" />
 
 <p>例如：</p>
-<img src="D:\Blog\source\_posts\数制与编码\image-20211207174754144.png" alt="image-20211207174754144" style="zoom: 67%;" />
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174754144.png" alt="image-20211207174754144" style="zoom: 67%;" />
 
 
 
@@ -662,8 +662,7 @@ Status <span class="token function">QueueEmpty</span><span class="token punctuat
 </ol>
 <p>  发送：101001001，记为C<sub>9</sub>C<sub>8</sub>C<sub>7</sub>C<sub>6</sub>C<sub>5</sub>C<sub>4</sub>C<sub>3</sub>C<sub>2</sub>C<sub>1</sub><br>  接收：101001001</p>
 <p>  用1101进行模2除 –→ 余数为000，代表没有出错</p>
-<p>  接收：101001011<br>  用1101进行模2除 –→ 余数为010，代表C<sub>2</sub>出错
-  </p>
+<p>  接收：101001011<br>  用1101进行模2除 –→ 余数为010，代表C<sub>2</sub>出错</p>
 ]]></content>
       <categories>
         <category>计算机组成原理</category>
