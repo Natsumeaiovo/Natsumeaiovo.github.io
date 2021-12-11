@@ -47,7 +47,7 @@ const ap = new APlayer({
     },
     {
       name: '音に出来る事',
-      artist: '松本文紀',
+      artist: 'H.B STUDIO',
       url: 'https://kusanagi.oss-cn-beijing.aliyuncs.com/music/%E9%9F%B3%E3%81%AB%E5%87%BA%E6%9D%A5%E3%82%8B%E4%BA%8B.mp3',
       cover: 'https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8D%93%E5%8F%B8sq.png',
     },
