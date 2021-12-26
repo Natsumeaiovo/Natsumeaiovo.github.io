@@ -1168,7 +1168,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #1b0b22;
+  background: #9e7e96;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2679,7 +2679,7 @@ mjx-container + br {
   }
 }
 body {
-  background: url("https://pic.imgdb.cn/item/61a86b382ab3f51d917c96b6.png");
+  background: url("https://pic.imgdb.cn/item/61a9d9212ab3f51d916fa863.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
