@@ -1,26 +1,22 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/medium.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.ico">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"canvas_sphere":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="一、思路">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kusanagi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、思路">
 <meta property="og:type" content="article">
 <meta property="og:title" content="找到二叉树给定两结点的共同祖先">
 <meta property="og:url" content="http://example.com/2021/12/26/%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%BB%93%E7%82%B9%E7%9A%84%E5%85%B1%E5%90%8C%E7%A5%96%E5%85%88/index.html">
@@ -34,671 +30,440 @@
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="计算机">
 <meta property="article:tag" content="二叉树">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211226020646165.png">
+  
+  
+  <title>找到二叉树给定两结点的共同祖先 - Kusanagi的博客</title>
 
-<link rel="canonical" href="http://example.com/2021/12/26/%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%BB%93%E7%82%B9%E7%9A%84%E5%85%B1%E5%90%8C%E7%A5%96%E5%85%88/">
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
 
-  <title>找到二叉树给定两结点的共同祖先 | Kusanagi的博客</title>
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
   
 
 
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
 
 
 
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
+<link  rel="stylesheet" href="/css/main.css" />
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+<!-- 自定义样式保持在最底部 -->
 
-</head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Kusanagi的博客</h1>
-      <span class="logo-line-after"><i></i></span>
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
     </a>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-resources">
-
-    <a href="/categories/resources/" rel="section"><i class="fa fa-cube fa-fw"></i>资源</a>
-
-  </li>
-        <li class="menu-item menu-item-guestbook">
-
-    <a href="/guestbook/" rel="section"><i class="fa fa-comments fa-fw"></i>留言</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="找到二叉树给定两结点的共同祖先">
+              
+            </span>
 
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
-
-    
+              <div class="mt-3">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/26/%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%BB%93%E7%82%B9%E7%9A%84%E5%85%B1%E5%90%8C%E7%A5%96%E5%85%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://pic.imgdb.cn/item/61a75d6d2ab3f51d91cd4ff7.jpg">
-      <meta itemprop="name" content="Kusanagi">
-      <meta itemprop="description" content="好吃就是高兴">
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-26 01:28" pubdate>
+        2021年12月26日 凌晨
+      </time>
     </span>
+  
+</div>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kusanagi的博客">
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
     </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          找到二叉树给定两结点的共同祖先
-        </h1>
+  
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
 
-              <time title="创建时间：2021-12-26 01:28:11" itemprop="dateCreated datePublished" datetime="2021-12-26T01:28:11+08:00">2021-12-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-11 14:45:09" itemprop="dateModified" datetime="2022-01-11T14:45:09+08:00">2022-01-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
-                </span>
-            </span>
+  
+  
+</div>
+
+            
+          </div>
 
           
-
         </div>
-      </header>
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
       
-        <h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><span id="more"></span>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">找到二叉树给定两结点的共同祖先</h1>
+            
+            <div class="markdown-body">
+              <h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><span id="more"></span>
 
 <h3 id="如何得到一个给定结点的所有祖先？"><a href="#如何得到一个给定结点的所有祖先？" class="headerlink" title="如何得到一个给定结点的所有祖先？"></a>如何得到一个给定结点的所有祖先？</h3><p>我们很容易想到后序遍历，利用栈实现后序遍历时，遍历到某结点时，栈中所有元素即该结点祖先。</p>
 <p>那么找出给定结点的所有祖先的算法如下：</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//todo  输出x的所有祖先</span>
-<span class="token keyword">void</span> <span class="token function">Anc_Print</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">,</span> TElemType x<span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-    BiTree p <span class="token operator">=</span> T<span class="token punctuation">,</span> r <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>    <span class="token comment">//r先用来标记右子树是否被访问过</span>
-    SqStack S<span class="token punctuation">;</span> <span class="token function">InitSqStack</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//初始化栈</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span>p <span class="token operator">||</span> S<span class="token punctuation">.</span>top <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>    <span class="token comment">//进行后序遍历</span>
-    <span class="token punctuation">&#123;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>    <span class="token comment">//一直入栈直到树的左下</span>
-        <span class="token punctuation">&#123;</span>
-            <span class="token function">SqPush</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            p <span class="token operator">=</span> p<span class="token operator">-></span>lchild<span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
-        <span class="token keyword">else</span>    <span class="token comment">//  转为右子树</span>
-        <span class="token punctuation">&#123;</span>
-            <span class="token function">SqGetTop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">-></span>rchild <span class="token operator">&amp;&amp;</span> p<span class="token operator">-></span>rchild <span class="token operator">!=</span> r<span class="token punctuation">)</span>    <span class="token comment">// 右子树存在且没被访问过</span>
-                p <span class="token operator">=</span> p<span class="token operator">-></span>rchild<span class="token punctuation">;</span>    <span class="token comment">//转向</span>
-            <span class="token keyword">else</span>    <span class="token comment">//  右子树不存在或被访问过了</span>
-            <span class="token punctuation">&#123;</span>
-                <span class="token function">SqPop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">-></span>data <span class="token operator">==</span> x<span class="token punctuation">)</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>   <span class="token comment">//找到值为x的结点，退出循环</span>
-                r <span class="token operator">=</span> p<span class="token punctuation">;</span>
-                p <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-            <span class="token punctuation">&#125;</span>
-        <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span>S<span class="token punctuation">.</span>top <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>    <span class="token comment">//输出所有祖先</span>
-    <span class="token punctuation">&#123;</span>
-        <span class="token function">SqPop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%c  "</span><span class="token punctuation">,</span>p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//todo  输出x的所有祖先</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Anc_Print</span><span class="hljs-params">(BiTree T, TElemType x)</span></span><br><span class="hljs-function"></span>&#123;<br>    BiTree p = T, r = <span class="hljs-literal">NULL</span>;    <span class="hljs-comment">//r先用来标记右子树是否被访问过</span><br>    SqStack S; InitSqStack(S); <span class="hljs-comment">//初始化栈</span><br>    <span class="hljs-keyword">while</span>(p || S.top != <span class="hljs-number">-1</span>)    <span class="hljs-comment">//进行后序遍历</span><br>    &#123;<br>        <span class="hljs-keyword">if</span>(p)    <span class="hljs-comment">//一直入栈直到树的左下</span><br>        &#123;<br>            SqPush(S, p);<br>            p = p-&gt;lchild;<br>        &#125;<br>        <span class="hljs-keyword">else</span>    <span class="hljs-comment">//  转为右子树</span><br>        &#123;<br>            SqGetTop(S, p);<br>            <span class="hljs-keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)    <span class="hljs-comment">// 右子树存在且没被访问过</span><br>                p = p-&gt;rchild;    <span class="hljs-comment">//转向</span><br>            <span class="hljs-keyword">else</span>    <span class="hljs-comment">//  右子树不存在或被访问过了</span><br>            &#123;<br>                SqPop(S, p);<br>                <span class="hljs-keyword">if</span>(p-&gt;data == x)<br>                    <span class="hljs-keyword">break</span>;   <span class="hljs-comment">//找到值为x的结点，退出循环</span><br>                r = p;<br>                p = <span class="hljs-literal">NULL</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">while</span>(S.top != <span class="hljs-number">-1</span>)    <span class="hljs-comment">//输出所有祖先</span><br>    &#123;<br>        SqPop(S, p);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c  &quot;</span>,p-&gt;data);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="如何找到两结点共同点祖先？"><a href="#如何找到两结点共同点祖先？" class="headerlink" title="如何找到两结点共同点祖先？"></a>如何找到两结点共同点祖先？</h3><p>由上面的过程，我们不难想到，后序遍历到某结点时，栈S中所有元素即该结点祖先。遍历到p或q时，将栈S中元素复制到一辅助栈S1里，再继续遍历到另一所求结点，那么从栈S栈顶开始逐个到辅助栈S1中去匹配，第一个匹配的结点即最近祖先。</p>
 <h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><ol>
 <li><p>首先我们希望输入想要找的结点的值，就能通过此值定向到该结点（树中所有结点data域均不同），从而去寻找共同祖先，那么首先我们需要指向data域等于我们input值的指针，可以通过如下代码实现：</p>
- <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token comment">//todo 找到指向x的指针</span>
-BiTree <span class="token function">Find_x</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">,</span> TElemType x<span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>T <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>T<span class="token operator">-></span>data <span class="token operator">==</span> x<span class="token punctuation">)</span>
-        <span class="token keyword">return</span> T<span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">Find_x</span><span class="token punctuation">(</span>T<span class="token operator">-></span>lchild<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token function">Find_x</span><span class="token punctuation">(</span>T<span class="token operator">-></span>lchild<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span>  <span class="token function">Find_x</span><span class="token punctuation">(</span>T<span class="token operator">-></span>rchild<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//todo 找到指向x的指针</span><br><span class="hljs-function">BiTree <span class="hljs-title">Find_x</span><span class="hljs-params">(BiTree T, TElemType x)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span>(T == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-keyword">if</span>(T-&gt;data == x)<br>        <span class="hljs-keyword">return</span> T;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Find_x</span>(T-&gt;lchild, x))<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Find_x</span>(T-&gt;lchild, x);<br>    <span class="hljs-keyword">return</span>  <span class="hljs-built_in">Find_x</span>(T-&gt;rchild, x);<br>&#125;<br></code></pre></td></tr></table></figure></li>
 <li><p>通过上述思想，将共同祖先保存到r：</p>
- <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">Ancestor</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">,</span> BiTree p<span class="token punctuation">,</span> BiTree q<span class="token punctuation">,</span> BiTree <span class="token operator">&amp;</span>r<span class="token punctuation">)</span>  <span class="token comment">//最后将最近共同祖先保存到 r</span>
-<span class="token punctuation">&#123;</span>
-    BiTree temp <span class="token operator">=</span> T<span class="token punctuation">,</span> x <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>    <span class="token comment">//? temp为工作指针;先找到p,则x指向q,先找到q,则x指向p</span>
-    r <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>    <span class="token comment">//? r先用来标记右子树是否被访问过</span>
-    <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> tag <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>    <span class="token comment">//?  tag记录是否找到了p或q(此时栈S1中已复制完成)</span>
-    SqStack S<span class="token punctuation">;</span> <span class="token function">InitSqStack</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    SqStack S1<span class="token punctuation">;</span> <span class="token function">InitSqStack</span><span class="token punctuation">(</span>S1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span>temp <span class="token operator">||</span> S<span class="token punctuation">.</span>top <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token punctuation">&#123;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span>    <span class="token comment">//? 一直入栈直到树的左下</span>
-        <span class="token punctuation">&#123;</span>
-            <span class="token function">SqPush</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            temp <span class="token operator">=</span> temp<span class="token operator">-></span>lchild<span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
-        <span class="token keyword">else</span>    <span class="token comment">//?  转为右子树</span>
-        <span class="token punctuation">&#123;</span>
-            <span class="token function">SqGetTop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>temp<span class="token operator">-></span>rchild <span class="token operator">&amp;&amp;</span> temp<span class="token operator">-></span>rchild <span class="token operator">!=</span> r<span class="token punctuation">)</span> <span class="token comment">//? 右子树存在且没被访问过</span>
-                temp <span class="token operator">=</span> temp<span class="token operator">-></span>rchild<span class="token punctuation">;</span>    <span class="token comment">//转向</span>
-            <span class="token keyword">else</span>    <span class="token comment">//?  右子树不存在或被访问过了</span>
-            <span class="token punctuation">&#123;</span>
-                <span class="token function">SqPop</span><span class="token punctuation">(</span>S<span class="token punctuation">,</span> temp<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">//* 将栈顶结点出栈，让 temp指向它</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>tag <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>temp <span class="token operator">==</span> p <span class="token operator">||</span> temp <span class="token operator">==</span> q<span class="token punctuation">)</span><span class="token punctuation">)</span>    <span class="token comment">//*  tag = 1时，说明已找到p或者q,所以此if下语句全程只会执行一次</span>
-                <span class="token punctuation">&#123;</span>
-                    x <span class="token operator">=</span> temp<span class="token operator">==</span>p <span class="token operator">?</span> q <span class="token operator">:</span> p<span class="token punctuation">;</span>
-                    <span class="token keyword">for</span><span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> S<span class="token punctuation">.</span>top<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
-                        S1<span class="token punctuation">.</span>data<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> S<span class="token punctuation">.</span>data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-                    S1<span class="token punctuation">.</span>top <span class="token operator">=</span> S<span class="token punctuation">.</span>top<span class="token punctuation">;</span>
-                    tag <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-                <span class="token punctuation">&#125;</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span>temp <span class="token operator">==</span> x<span class="token punctuation">)</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                r <span class="token operator">=</span> temp<span class="token punctuation">;</span>
-                temp <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-            <span class="token punctuation">&#125;</span>
-        <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token keyword">int</span> i0 <span class="token operator">=</span> i<span class="token punctuation">;</span>  <span class="token comment">//i0存放S1的栈顶</span>
-    j <span class="token operator">=</span> S<span class="token punctuation">.</span>top<span class="token punctuation">;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span>j <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">)</span>    <span class="token comment">//栈S从栈顶开始，从辅助栈S1中逐个寻找相同元素</span>
-    <span class="token punctuation">&#123;</span>
-        <span class="token keyword">while</span><span class="token punctuation">(</span>i<span class="token operator">>=</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> S<span class="token punctuation">.</span>data<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">!=</span> S1<span class="token punctuation">.</span>data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
-            i<span class="token operator">--</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>i <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token punctuation">&#123;</span>
-            i <span class="token operator">=</span> i0<span class="token punctuation">;</span>  <span class="token comment">//i重新指向栈顶</span>
-            j<span class="token operator">--</span><span class="token punctuation">;</span>  <span class="token comment">//继续从栈S下一个元素开始逐个与S1匹配</span>
-        <span class="token punctuation">&#125;</span>
-        <span class="token keyword">else</span>  <span class="token comment">//i>=0说明匹配成功，退出循环</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>i <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        r <span class="token operator">=</span> S1<span class="token punctuation">.</span>data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token keyword">else</span>  <span class="token comment">//如果i&lt;0，则寻找失败，无共同祖先</span>
-        r <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Ancestor</span><span class="hljs-params">(BiTree T, BiTree p, BiTree q, BiTree &amp;r)</span>  <span class="hljs-comment">//最后将最近共同祖先保存到 r</span></span><br><span class="hljs-function"></span>&#123;<br>    BiTree temp = T, x = <span class="hljs-literal">NULL</span>;    <span class="hljs-comment">//? temp为工作指针;先找到p,则x指向q,先找到q,则x指向p</span><br>    r = <span class="hljs-literal">NULL</span>;    <span class="hljs-comment">//? r先用来标记右子树是否被访问过</span><br>    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>, tag = <span class="hljs-number">0</span>;    <span class="hljs-comment">//?  tag记录是否找到了p或q(此时栈S1中已复制完成)</span><br>    SqStack S; <span class="hljs-built_in">InitSqStack</span>(S);<br>    SqStack S1; <span class="hljs-built_in">InitSqStack</span>(S1);<br>    <span class="hljs-keyword">while</span>(temp || S.top != <span class="hljs-number">-1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span>(temp)    <span class="hljs-comment">//? 一直入栈直到树的左下</span><br>        &#123;<br>            <span class="hljs-built_in">SqPush</span>(S, temp);<br>            temp = temp-&gt;lchild;<br>        &#125;<br>        <span class="hljs-keyword">else</span>    <span class="hljs-comment">//?  转为右子树</span><br>        &#123;<br>            <span class="hljs-built_in">SqGetTop</span>(S, temp);<br>            <span class="hljs-keyword">if</span>(temp-&gt;rchild &amp;&amp; temp-&gt;rchild != r) <span class="hljs-comment">//? 右子树存在且没被访问过</span><br>                temp = temp-&gt;rchild;    <span class="hljs-comment">//转向</span><br>            <span class="hljs-keyword">else</span>    <span class="hljs-comment">//?  右子树不存在或被访问过了</span><br>            &#123;<br>                <span class="hljs-built_in">SqPop</span>(S, temp);        <span class="hljs-comment">//* 将栈顶结点出栈，让 temp指向它</span><br>                <span class="hljs-keyword">if</span>(!tag &amp;&amp; (temp == p || temp == q))    <span class="hljs-comment">//*  tag = 1时，说明已找到p或者q,所以此if下语句全程只会执行一次</span><br>                &#123;<br>                    x = temp==p ? q : p;<br>                    <span class="hljs-keyword">for</span>(i = <span class="hljs-number">0</span>; i &lt;= S.top; i++)<br>                        S1.data[i] = S.data[i];<br>                    S1.top = S.top;<br>                    tag = <span class="hljs-number">1</span>;<br>                &#125;<br>                <span class="hljs-keyword">if</span>(temp == x)<br>                    <span class="hljs-keyword">break</span>;<br>                r = temp;<br>                temp = <span class="hljs-literal">NULL</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">int</span> i0 = i;  <span class="hljs-comment">//i0存放S1的栈顶</span><br>    j = S.top;<br>    <span class="hljs-keyword">while</span>(j &gt;= <span class="hljs-number">0</span>)    <span class="hljs-comment">//栈S从栈顶开始，从辅助栈S1中逐个寻找相同元素</span><br>    &#123;<br>        <span class="hljs-keyword">while</span>(i&gt;=<span class="hljs-number">0</span> &amp;&amp; S.data[j] != S1.data[i])<br>            i--;<br>        <span class="hljs-keyword">if</span>(i &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            i = i0;  <span class="hljs-comment">//i重新指向栈顶</span><br>            j--;  <span class="hljs-comment">//继续从栈S下一个元素开始逐个与S1匹配</span><br>        &#125;<br>        <span class="hljs-keyword">else</span>  <span class="hljs-comment">//i&gt;=0说明匹配成功，退出循环</span><br>            <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(i &gt;= <span class="hljs-number">0</span>)<br>        r = S1.data[i];<br>    <span class="hljs-keyword">else</span>  <span class="hljs-comment">//如果i&lt;0，则寻找失败，无共同祖先</span><br>        r = <span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure></li>
 <li><p>返回指向r的指针（考虑到上面算法会出错的情况并完善）：</p>
- <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">BiTree <span class="token function">ComAnc_Node</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">,</span> TElemType p<span class="token punctuation">,</span> TElemType q<span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-    BiTree r<span class="token punctuation">,</span> n1<span class="token punctuation">,</span> n2<span class="token punctuation">;</span>
-    n1 <span class="token operator">=</span> <span class="token function">Find_x</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    n2 <span class="token operator">=</span> <span class="token function">Find_x</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span> q<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>n1 <span class="token operator">||</span> <span class="token operator">!</span>n2<span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>p<span class="token operator">==</span>T<span class="token operator">-></span>data <span class="token operator">||</span> q<span class="token operator">==</span>T<span class="token operator">-></span>data<span class="token punctuation">)</span>
-        <span class="token keyword">return</span> T<span class="token punctuation">;</span>
-    <span class="token function">Ancestor</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span> n1<span class="token punctuation">,</span> n2<span class="token punctuation">,</span> r<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> r<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">BiTree <span class="hljs-title">ComAnc_Node</span><span class="hljs-params">(BiTree T, TElemType p, TElemType q)</span></span><br><span class="hljs-function"></span>&#123;<br>    BiTree r, n1, n2;<br>    n1 = <span class="hljs-built_in">Find_x</span>(T, p);<br>    n2 = <span class="hljs-built_in">Find_x</span>(T, q);<br>    <span class="hljs-keyword">if</span>(!n1 || !n2)<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-keyword">if</span>(p==T-&gt;data || q==T-&gt;data)<br>        <span class="hljs-keyword">return</span> T;<br>    <span class="hljs-built_in">Ancestor</span>(T, n1, n2, r);<br>    <span class="hljs-keyword">return</span> r;<br>&#125;<br></code></pre></td></tr></table></figure></li>
 <li><p>试运行：</p>
- <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span> 
-    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
-    BiTree T<span class="token punctuation">,</span>Tnew<span class="token punctuation">,</span>com_anc<span class="token punctuation">;</span>
-    TElemType e1<span class="token punctuation">;</span>
-    <span class="token function">InitBiTree</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"初始化二叉树后,树空否？\n%d(1:是 0:否) 树的深度=%d\n"</span><span class="token punctuation">,</span> <span class="token function">BiTreeEmpty</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">BiTreeDepth</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">StrAssign</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">"ABDH#K###E##CFI###G#J##"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">//按前序输入</span>
-    <span class="token function">CreateBiTree</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"构造二叉树后,树空否？\n%d(1:是 0:否) 树的深度=%d\n"</span><span class="token punctuation">,</span> <span class="token function">BiTreeEmpty</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">BiTreeDepth</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    e1 <span class="token operator">=</span> <span class="token function">Root</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"二叉树的根为: %c\n"</span><span class="token punctuation">,</span> e1<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"树的高度:%d\n"</span><span class="token punctuation">,</span> <span class="token function">BtDepth_2</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n前序递归遍历二叉树T:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">PreOrderTraverse</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n中序递归遍历二叉树T:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">InOrderTraverse</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n后序递归遍历二叉树T:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">PostOrderTraverse</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n    层次遍历二叉树T:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">LevelOrderTraverse</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    com_anc <span class="token operator">=</span> <span class="token function">ComAnc_Node</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span> <span class="token string">'K'</span><span class="token punctuation">,</span> <span class="token string">'E'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>com_anc<span class="token punctuation">)</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"最近祖先为：%c\n"</span><span class="token punctuation">,</span> com_anc<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">else</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"输入不合法或无共同祖先\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">system</span><span class="token punctuation">(</span><span class="token string">"pause"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123; <br>    <span class="hljs-keyword">int</span> i;<br>    BiTree T,Tnew,com_anc;<br>    TElemType e1;<br>    <span class="hljs-built_in">InitBiTree</span>(&amp;T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;初始化二叉树后,树空否？\n%d(1:是 0:否) 树的深度=%d\n&quot;</span>, <span class="hljs-built_in">BiTreeEmpty</span>(T), <span class="hljs-built_in">BiTreeDepth</span>(T));<br>    <span class="hljs-built_in">StrAssign</span>(str, <span class="hljs-string">&quot;ABDH#K###E##CFI###G#J##&quot;</span>);<br>    <span class="hljs-comment">//按前序输入</span><br>    <span class="hljs-built_in">CreateBiTree</span>(&amp;T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;构造二叉树后,树空否？\n%d(1:是 0:否) 树的深度=%d\n&quot;</span>, <span class="hljs-built_in">BiTreeEmpty</span>(T), <span class="hljs-built_in">BiTreeDepth</span>(T));<br>    e1 = <span class="hljs-built_in">Root</span>(T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;二叉树的根为: %c\n&quot;</span>, e1);<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;树的高度:%d\n&quot;</span>, <span class="hljs-built_in">BtDepth_2</span>(T));<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n前序递归遍历二叉树T:&quot;</span>);<br>    <span class="hljs-built_in">PreOrderTraverse</span>(T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n中序递归遍历二叉树T:&quot;</span>);<br>    <span class="hljs-built_in">InOrderTraverse</span>(T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n后序递归遍历二叉树T:&quot;</span>);<br>    <span class="hljs-built_in">PostOrderTraverse</span>(T);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n    层次遍历二叉树T:&quot;</span>);<br>    <span class="hljs-built_in">LevelOrderTraverse</span>(T);<br>    com_anc = <span class="hljs-built_in">ComAnc_Node</span>(T, <span class="hljs-string">&#x27;K&#x27;</span>, <span class="hljs-string">&#x27;E&#x27;</span>);<br>    <span class="hljs-keyword">if</span>(com_anc)<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;最近祖先为：%c\n&quot;</span>, com_anc-&gt;data);<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;输入不合法或无共同祖先\n&quot;</span>);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;pause&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p> 运行结果：</p>
-<p> <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211226020646165.png" alt="image-20211226020646165"></p>
+<p> <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211226020646165.png" srcset="/img/loading.gif" lazyload alt="image-20211226020646165"></p>
 </li>
 </ol>
 
-    </div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AD%A6%E4%B9%A0/">学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/">计算机</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/">二叉树</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/">
+                        <span class="hidden-mobile">数制与编码</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag"># 计算机</a>
-              <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag"># 二叉树</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2021/12/03/%E6%95%B0%E5%88%B6%E4%B8%8E%E7%BC%96%E7%A0%81/" rel="prev" title="数制与编码">
-      <i class="fa fa-chevron-left"></i> 数制与编码
-    </a></div>
-      <div class="post-nav-item"></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+            
+          </article>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">一、思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E4%B8%80%E4%B8%AA%E7%BB%99%E5%AE%9A%E7%BB%93%E7%82%B9%E7%9A%84%E6%89%80%E6%9C%89%E7%A5%96%E5%85%88%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">如何得到一个给定结点的所有祖先？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E4%B8%A4%E7%BB%93%E7%82%B9%E5%85%B1%E5%90%8C%E7%82%B9%E7%A5%96%E5%85%88%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">如何找到两结点共同点祖先？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">二、实现</span></a></li></ol></div>
       </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Kusanagi"
-      src="https://pic.imgdb.cn/item/61a75d6d2ab3f51d91cd4ff7.jpg">
-  <p class="site-author-name" itemprop="name">Kusanagi</p>
-  <div class="site-description" itemprop="description">好吃就是高兴</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">4</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">3</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">4</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/natsumeaiovo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:natsumeaiovo@outlook.com" title="E-Mail → mailto:natsumeaiovo@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/natsumeaiovo" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/natsumeaiovo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;natsumeaiovo" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
     </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2021-12 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Kusanagi</span>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-<!--
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>-->
-
-        
-
-
-
-
-
-
-
-
       </div>
-    </footer>
+    
   </div>
+</div>
 
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<!-- Custom -->
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <link rel="stylesheet" href="/dist/APlayer.min.css">
-  <div id="aplayer"></div>
-  <script type="text/javascript" src="/dist/APlayer.min.js"></script>
-  <script type="text/javascript" src="/dist/music.js"></script>
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-          load: ['[tex]/mhchem'],
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-          packages: {'[+]': ['mhchem']},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
 
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
   
 
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
 
 
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/haruto.model.json"},"display":{"position":"right","width":160,"height":240},"mobile":{"show":false},"log":false});</script></body>
