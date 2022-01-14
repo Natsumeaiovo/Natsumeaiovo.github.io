@@ -10,10 +10,10 @@
 
 
 <h3 id="Anime4K"><a href="#Anime4K" class="headerlink" title="Anime4K"></a>Anime4K</h3><p>​    当你在看老番或是在推一部老物 gal &amp; avg ，是否在为其画质差而发愁？Anime4K（动漫图片超分辨率算法）即是一个实时、视频动画放大算法，不用等待处理视频动画的时间，在你观看的同时即可做到画质提升，在一周内，Anime4K在Github上收获了将近3千颗星，作者在6天前介绍了reddit上的项目，并成为每个人的热门话题，引起了极大的关注。引用一下作者原话：</p>
-<blockquote>
-<p>Anime4K is a set of open-source, high-quality real-time anime upscaling/denoising algorithms that can be implemented in any programming language.</p>
-<p>The simplicity and speed of Anime4K allows the user to watch upscaled anime in real time, as we believe in preserving original content and promoting freedom of choice for all anime fans. Re-encoding anime into 4K should be avoided as it is non-reversible, potentially damages original content by introducing artifacts, takes up to O(n<sup>2</sup>) more disk space and more importantly, does so without any meaningful decrease in entropy (lost information is lost).</p>
-</blockquote>
+<div class="note note-info">
+            <p>Anime4K is a set of open-source, high-quality real-time anime upscaling/denoising algorithms that can be implemented in any programming language.</p><p>The simplicity and speed of Anime4K allows the user to watch upscaled anime in real time, as we believe in preserving original content and promoting freedom of choice for all anime fans. Re-encoding anime into 4K should be avoided as it is non-reversible, potentially damages original content by introducing artifacts, takes up to O(n<sup>2</sup>) more disk space and more importantly, does so without any meaningful decrease in entropy (lost information is lost).</p>
+          </div>
+
 <p>​    附上开源项目原地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/bloc97/Anime4K">https://github.com/bloc97/Anime4K</a></p>
 <p>​    将其导入到支持的视频软件后，便可以享受1080P升级到近4K的画质了，来看看使用具体表现！</p>
 <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012627278.png" style="zoom: 50%;" />
@@ -27,8 +27,7 @@
 <p>主要用于游戏窗口的放大显示，适用于不支持全屏模式，或者内置的全屏模式会使画面模糊的情况。</p>
 </blockquote>
 <p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204013127026.png"></p>
-<p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>全部变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多。</p>
-<p>当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
+<p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>全部变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多。当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
 <p>当然，使用算法实时渲染提升画质，对显卡来说是有性能要求的，所以要想畅玩享受全屏清晰画质的 anime &amp; gal 的话，一个相对来说好点显卡是必须的。</p>
 <p>对于提升游戏帧数来说，不同游戏的体验不同，实际使用Magpie支持的FSR算法体验不算很好，期待以后算法的改善。</p>
 ]]></content>
@@ -234,10 +233,9 @@
 </tbody></table>
 </li>
 <li><p><strong>国际码：</strong>将十进制的区位码转换为十六进制数后，再在每字节上加上 20H 。国际码两字节的最高位都是 0 ，ASCII码的最高位也是 0 。</p>
-<blockquote>
-<p>（为什么要加入2020H呢？）ASCII码表前32（20H）位 0 - 31 都是用于通信和控制的字符，加上2020H后，可以防止信息交换时与“控制/通信字符”冲突。</p>
-</blockquote>
-</li>
+<div class="note note-success">
+            <p>（为什么要加入2020H呢？）ASCII码表前32（20H）位 0 - 31 都是用于通信和控制的字符，加上2020H后，可以防止信息交换时与“控制/通信字符”冲突。</p>
+          </div></li>
 <li><p><strong>汉字内码：</strong>为了方便计算机区分中文字符和英文字符，将国际码两字节的最高位都改为”1”，这就是汉字内码。要保证最高位为“1”，所以要加上8080H。（注意是在国际码基础上 + 8080H）</p>
 </li>
 </ol>
@@ -267,9 +265,9 @@
 <p>对于机器，它算出的(这里注意<strong>指误码</strong>并不是<strong>校验位</strong>，注意区分S和P的含义)</p>
 <p>奇校验<strong>指误码</strong>：<br>$$<br>S_奇 = \overline{P \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n}<br>$$<br>偶校验<strong>指误码</strong>：<br>$$<br>S_偶 = P \oplus X_1\oplus X_2\oplus X_3\oplus …\oplus X_n<br>$$<br>$$<br>X_1,X_2,…,X_n表示被校验的数据，P为校验位，当S_{奇/偶} = 0表示数据正常(并不可证明数据无错误!)，否则表示出错<br>$$</p>
 <p><strong>Question: 奇/偶校验码的码距为？</strong></p>
-<blockquote>
-<p>Answer：<strong>一定为2。</strong>一般地，比如8421码：0000，0001，…，1111，奇偶校验就是一个码组（如8421）内的任意2个有效编码间的不同位数（因为是任意的2个，所以在8421中取0000和0001只有1位不同），码距为1。加上奇偶校验后，使1的个数变为奇数或偶数（如0001变00010为奇，变00011为偶），此码组都这样编码（奇校验：00001，00010，…，11111）码距最小为2。</p>
-</blockquote>
+<div class="note note-info">
+            <p>Answer：<strong>一定为2。</strong>一般地，比如8421码：0000，0001，…，1111，奇偶校验就是一个码组（如8421）内的任意2个有效编码间的不同位数（因为是任意的2个，所以在8421中取0000和0001只有1位不同），码距为1。加上奇偶校验后，使1的个数变为奇数或偶数（如0001变00010为奇，变00011为偶），此码组都这样编码（奇校验：00001，00010，…，11111）码距最小为2。</p>
+          </div>
 <p><strong>缺点：</strong>具有局限性，只能发现数据代码出错位的个数为<strong>奇数情况下的错误</strong>，比如2个或4个或2n个位都出错了，此时校验失效。而且不能确定是哪一位出错。只有1个校验位，故只能携带 true or false 2种状态信息，<strong>只能检测奇数个错误，不能纠正错误</strong>。</p>
 <p>到这里你可能会有个疑问，为什么奇偶校验码的码距为2，却可以检测出1、3、…、2n + 1 个错误呢？公式不是说好了应该只能检测出1个错误吗？↓<br>$$<br>码距 \geq e + 1; (可检测 e 个错误)<br>$$</p>
 <ul>
@@ -408,12 +406,9 @@
 <p>$$<br>S_3 = P_3 \oplus D_2 \oplus D_3 \oplus D_4 = 0 \oplus 1 \oplus \underline1 \oplus 1 = 1<br>$$</p>
 <p>那么 我们由 S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 可以得到错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误</p>
 <p><strong>Question: 为何可以通过S<sub>3</sub>S<sub>2</sub>S<sub>1</sub>得到错误的位置？为何不是S<sub>1</sub>S<sub>2</sub>S<sub>3</sub>？</strong></p>
-<blockquote>
-<p>Answer: 我们分别把 P<sub>3</sub>P<sub>2</sub>P<sub>1 </sub> 放到 421 的位置（把 P<sub>i</sub> 放在2<sup>i-1</sup>的位置），我们可以把它理解成一种权重，与海明位号二进制表示的各个权重是一一对应的！回顾一下上面求校验位值的过程：</p>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" style="zoom: 67%;" />
-
-<p>校验方程 S<sub>i</sub> 中包含的校验位即是 P<sub>i</sub> ，按从大到小的权重排列即是：S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> 。所以上述发生了错误对于各校验方程的值： S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，即指出错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误。</p>
-</blockquote>
+<div class="note note-info">
+            <p>Answer: 我们分别把 P<sub>3</sub>P<sub>2</sub>P<sub>1 </sub> 放到 421 的位置（把 P<sub>i</sub> 放在2<sup>i-1</sup>的位置），我们可以把它理解成一种权重，与海明位号二进制表示的各个权重是一一对应的！回顾一下上面求校验位值的过程：</p> <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" style="zoom: 67%;" /><p>校验方程 S<sub>i</sub> 中包含的校验位即是 P<sub>i</sub> ，按从大到小的权重排列即是：S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> 。所以上述发生了错误对于各校验方程的值： S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，即指出错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误。</p>
+          </div>
 <h4 id="（补充）海明码的检错、纠错能力"><a href="#（补充）海明码的检错、纠错能力" class="headerlink" title="（补充）海明码的检错、纠错能力"></a>（补充）海明码的检错、纠错能力</h4><p>纠错能力 —— 1位</p>
 <p>检错能力 —— 2位</p>
 <ol>
