@@ -18,16 +18,16 @@
   <meta name="author" content="Kusanagi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、思路如何得到一个给定结点的所有祖先？">
+    <meta name="description" content="基于后序遍历">
 <meta property="og:type" content="article">
 <meta property="og:title" content="找到二叉树给定两结点的共同祖先">
 <meta property="og:url" content="http://example.com/2021/12/26/%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%BB%93%E7%82%B9%E7%9A%84%E5%85%B1%E5%90%8C%E7%A5%96%E5%85%88/index.html">
 <meta property="og:site_name" content="Kusanagi的博客">
-<meta property="og:description" content="一、思路如何得到一个给定结点的所有祖先？">
+<meta property="og:description" content="基于后序遍历">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220114012951758.png">
 <meta property="article:published_time" content="2021-12-25T17:28:11.000Z">
-<meta property="article:modified_time" content="2022-01-13T18:07:16.139Z">
+<meta property="article:modified_time" content="2022-01-14T03:15:15.403Z">
 <meta property="article:author" content="Kusanagi">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="计算机">
@@ -73,7 +73,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -252,7 +252,7 @@
             <h1 style="display: none">找到二叉树给定两结点的共同祖先</h1>
             
             <div class="markdown-body">
-              <h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><h3 id="如何得到一个给定结点的所有祖先？"><a href="#如何得到一个给定结点的所有祖先？" class="headerlink" title="如何得到一个给定结点的所有祖先？"></a>如何得到一个给定结点的所有祖先？</h3><span id="more"></span>我们很容易想到后序遍历，利用栈实现后序遍历时，遍历到某结点时，栈中所有元素即该结点祖先。
+              <h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><h3 id="如何得到一个给定结点的所有祖先？"><a href="#如何得到一个给定结点的所有祖先？" class="headerlink" title="如何得到一个给定结点的所有祖先？"></a>如何得到一个给定结点的所有祖先？</h3><!-- more -->我们很容易想到后序遍历，利用栈实现后序遍历时，遍历到某结点时，栈中所有元素即该结点祖先。
 
 <p>那么找出给定结点的所有祖先的算法如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></div></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//todo  输出x的所有祖先</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Anc_Print</span><span class="hljs-params">(BiTree T, TElemType x)</span></span><br><span class="hljs-function"></span>&#123;<br>    BiTree p = T, r = <span class="hljs-literal">NULL</span>;    <span class="hljs-comment">//r先用来标记右子树是否被访问过</span><br>    SqStack S; <span class="hljs-built_in">InitSqStack</span>(S); <span class="hljs-comment">//初始化栈</span><br>    <span class="hljs-keyword">while</span>(p || S.top != <span class="hljs-number">-1</span>)    <span class="hljs-comment">//进行后序遍历</span><br>    &#123;<br>        <span class="hljs-keyword">if</span>(p)    <span class="hljs-comment">//一直入栈直到树的左下</span><br>        &#123;<br>            <span class="hljs-built_in">SqPush</span>(S, p);<br>            p = p-&gt;lchild;<br>        &#125;<br>        <span class="hljs-keyword">else</span>    <span class="hljs-comment">//  转为右子树</span><br>        &#123;<br>            <span class="hljs-built_in">SqGetTop</span>(S, p);<br>            <span class="hljs-keyword">if</span>(p-&gt;rchild &amp;&amp; p-&gt;rchild != r)    <span class="hljs-comment">// 右子树存在且没被访问过</span><br>                p = p-&gt;rchild;    <span class="hljs-comment">//转向</span><br>            <span class="hljs-keyword">else</span>    <span class="hljs-comment">//  右子树不存在或被访问过了</span><br>            &#123;<br>                <span class="hljs-built_in">SqPop</span>(S, p);<br>                <span class="hljs-keyword">if</span>(p-&gt;data == x)<br>                    <span class="hljs-keyword">break</span>;   <span class="hljs-comment">//找到值为x的结点，退出循环</span><br>                r = p;<br>                p = <span class="hljs-literal">NULL</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">while</span>(S.top != <span class="hljs-number">-1</span>)    <span class="hljs-comment">//输出所有祖先</span><br>    &#123;<br>        <span class="hljs-built_in">SqPop</span>(S, p);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c  &quot;</span>,p-&gt;data);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -301,7 +301,7 @@
               
                 <p class="note note-warning">
                   
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                    What is mind? No matter. What is matter? Never mind.
                   
                 </p>
               
@@ -326,6 +326,33 @@
             </div>
 
             
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"7d8ee62fd4b356508cc5","clientSecret":"2c267c8b1672a9165b4c4a9ea798947b10d3ae1c","repo":"Natsumeaiovo.github.io","owner":"natsumeaiovo","admin":["Natsumeaiovo"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '117b1d915b32e8f562b364b7467ab5c0'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
           </article>
         </div>
       </div>
@@ -343,6 +370,12 @@
 </div>
 
 <!-- Custom -->
+
+  <div class="col-lg-7 mx-auto nopadding-x-md">
+    <div class="container custom post-custom mx-auto">
+       <img src="https://pic.imgdb.cn/item/61e0f8052ab3f51d91101e7d.png" srcset="/img/loading.gif" lazyload class="mx-auto d-block mt-5" style="width:150px; height:150px;"> <p style="text-align:center"> </p> <p style="text-align:center"># Life is about creating yourself.</p> 
+    </div>
+  </div>
 
 
     
@@ -394,17 +427,6 @@
 
   <!-- SCRIPTS -->
   
-  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
-    })
-  </script>
-
 
 <script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
 <script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
