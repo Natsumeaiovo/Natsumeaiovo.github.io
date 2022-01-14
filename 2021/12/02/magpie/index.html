@@ -332,10 +332,10 @@
     Fluid.utils.loadComments('#comments', function() {
       Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js', function() {
         var options = Object.assign(
-          {"envId":"https://twikoo-gdk6clrdh-natsumeaiovo.vercel.app/","region":"ap-shanghai","path":null},
+          {"envId":"https://twikoo-gdk6clrdh-natsumeaiovo.vercel.app/","region":"ap-shanghai","path":"location"},
           {
             el: '#twikoo',
-            path: '',
+            path: 'location',
             onCommentLoaded: function() {
               Fluid.plugins.initFancyBox('#twikoo .tk-content img:not(.tk-owo-emotion)');
             }
