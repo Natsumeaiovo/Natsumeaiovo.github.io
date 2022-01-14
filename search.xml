@@ -39,6 +39,12 @@
       </tags>
   </entry>
   <entry>
+    <title>test</title>
+    <url>/2022/01/14/test/</url>
+    <content><![CDATA[<p>mongodb+srv://kusanagi:&lt;011122&gt;@cluster0.ggy1s.mongodb.net/myFirstDatabase?retryWrites=true&amp;w=majority</p>
+]]></content>
+  </entry>
+  <entry>
     <title>找到二叉树给定两结点的共同祖先</title>
     <url>/2021/12/26/%E6%89%BE%E5%88%B0%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BB%99%E5%AE%9A%E4%B8%A4%E7%BB%93%E7%82%B9%E7%9A%84%E5%85%B1%E5%90%8C%E7%A5%96%E5%85%88/</url>
     <content><![CDATA[<h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><h3 id="如何得到一个给定结点的所有祖先？"><a href="#如何得到一个给定结点的所有祖先？" class="headerlink" title="如何得到一个给定结点的所有祖先？"></a>如何得到一个给定结点的所有祖先？</h3><!-- more -->我们很容易想到后序遍历，利用栈实现后序遍历时，遍历到某结点时，栈中所有元素即该结点祖先。
