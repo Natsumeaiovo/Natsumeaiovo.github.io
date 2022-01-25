@@ -72,7 +72,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -283,7 +283,7 @@
 <p>④不存在两个相邻的红结点（即红结点的父节点和孩子结点均是黑色）</p>
 <p>⑤对每个结点，从该节点到任一叶结点的简单路径上，所含黑结点的数目相同</p>
 <p>实例：一颗红黑树</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220115203316375.png" srcset="/img/loading.gif" lazyload style="zoom:40%;" /></li>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220115203316375.png" style="zoom:40%;" /></li>
 </ol>
 <div class="note note-info">
             <p>结点的黑高 bh ：从某结点出发（不含该结点）到达任一空叶结点（含叶结点）的路径上黑结点总数。</p>
@@ -291,7 +291,7 @@
 
 <p><strong>思考：</strong>根节点黑高为 h 的红黑树，内部结点数（关键字）至少有多少个？</p>
 <p>Answer：内部结点数最少的情况——总共h层黑结点的满树形态，即：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116150104977.png" srcset="/img/loading.gif" lazyload style="zoom: 80%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116150104977.png" style="zoom: 80%;" />
 
 <p>结论：若根节点黑高为h，内部结点数（关键字）最少有 2<sup>h</sup>-1 个</p>
 <p>进而有如下结论：</p>
@@ -330,17 +330,17 @@
 </li>
 </ul>
 <p><strong>例：</strong>从一棵空的红黑树开始，插入：20, 10, 5, 30, 40, 57, 3, 2, 4, 35, 25, 18, 22, 23, 24, 19, 18 </p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116000500362.png" srcset="/img/loading.gif" lazyload style="zoom: 45%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116000500362.png" style="zoom: 45%;" />
 
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116001531379.png" srcset="/img/loading.gif" lazyload style="zoom:45%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116001531379.png" style="zoom:45%;" />
 
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002640320.png" srcset="/img/loading.gif" lazyload style="zoom:45%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002640320.png" style="zoom:45%;" />
 
 <p>…</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002829660.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002829660.png" style="zoom:80%;" />
 
 <p>一直重复上述操作，最终得到：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002935419.png" srcset="/img/loading.gif" lazyload style="zoom:45%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002935419.png" style="zoom:45%;" />
 
 <h2 id="红黑树的删除"><a href="#红黑树的删除" class="headerlink" title="红黑树的删除"></a>红黑树的删除</h2><h3 id="1-删除红结点"><a href="#1-删除红结点" class="headerlink" title="1. 删除红结点"></a>1. 删除红结点</h3><p>对于删除红结点，其不会破坏红黑树原有的性质。<strong>第一</strong>，根结点到任意叶结点的黑结点数量不变，不会破坏红黑树的黑高；<strong>其次</strong>，删除红结点，不会有相邻的红结点出现，因为红结点的子结点总是黑色。删除红结点过程中，红结点可以分为：</p>
 <ul>
@@ -350,27 +350,27 @@
 </ul>
 <p>此时，直接应用AVL树中删除结点的方法，对其进行删除，过程不再赘述。问题只剩下删除黑结点。</p>
 <h3 id="2-删除黑结点"><a href="#2-删除黑结点" class="headerlink" title="2. 删除黑结点"></a>2. 删除黑结点</h3><p>删除黑结点的过程繁琐得多，主要分为以下情况：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225206937.png" srcset="/img/loading.gif" lazyload style="zoom:45%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225206937.png" style="zoom:45%;" />
 
 <p>问题：“我”的一个黑色子结点被删除了，经调整后<strong>我和我的我的子树“1”构成的树已满足红黑树的性质，但是“父P”的左子树的黑高 -1</strong> ，如何修复整颗红黑树的性质？</p>
 <p>对于如下不同情形的方案：</p>
-<h4 id="（1）哥黑，双侄黑，父黑"><a href="#（1）哥黑，双侄黑，父黑" class="headerlink" title="（1）哥黑，双侄黑，父黑"></a>（1）哥黑，双侄黑，父黑</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116232723116.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<h4 id="（1）哥黑，双侄黑，父黑"><a href="#（1）哥黑，双侄黑，父黑" class="headerlink" title="（1）哥黑，双侄黑，父黑"></a>（1）哥黑，双侄黑，父黑</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116232723116.png" style="zoom:50%;" />
 
 <p><strong>方案：</strong>将哥S染红，问题解决。</p>
-<h4 id="（2）哥黑，双侄黑，父红"><a href="#（2）哥黑，双侄黑，父红" class="headerlink" title="（2）哥黑，双侄黑，父红"></a>（2）哥黑，双侄黑，父红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225805164.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<h4 id="（2）哥黑，双侄黑，父红"><a href="#（2）哥黑，双侄黑，父红" class="headerlink" title="（2）哥黑，双侄黑，父红"></a>（2）哥黑，双侄黑，父红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225805164.png" style="zoom:50%;" />
 
 <p><strong>方案：</strong>直接将父P和哥S换色，问题解决。</p>
-<h4 id="（3）哥黑，顺侄红（逆侄色任意，父色任意）"><a href="#（3）哥黑，顺侄红（逆侄色任意，父色任意）" class="headerlink" title="（3）哥黑，顺侄红（逆侄色任意，父色任意）"></a>（3）哥黑，顺侄红（逆侄色任意，父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116231511669.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+<h4 id="（3）哥黑，顺侄红（逆侄色任意，父色任意）"><a href="#（3）哥黑，顺侄红（逆侄色任意，父色任意）" class="headerlink" title="（3）哥黑，顺侄红（逆侄色任意，父色任意）"></a>（3）哥黑，顺侄红（逆侄色任意，父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116231511669.png" style="zoom: 50%;" />
 
 <p><strong>方案：</strong>①首先对父P进行左旋；②将父P与哥S的颜色交换；③将顺侄染为黑色。问题解决。</p>
-<h4 id="（4）哥黑，顺侄黑，逆侄红（父色任意）"><a href="#（4）哥黑，顺侄黑，逆侄红（父色任意）" class="headerlink" title="（4）哥黑，顺侄黑，逆侄红（父色任意）"></a>（4）哥黑，顺侄黑，逆侄红（父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116234653862.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<h4 id="（4）哥黑，顺侄黑，逆侄红（父色任意）"><a href="#（4）哥黑，顺侄黑，逆侄红（父色任意）" class="headerlink" title="（4）哥黑，顺侄黑，逆侄红（父色任意）"></a>（4）哥黑，顺侄黑，逆侄红（父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116234653862.png" style="zoom:50%;" />
 
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116233420377.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116233420377.png" style="zoom:50%;" />
 
 <p><strong>方案：</strong>①首先对哥S进行右旋，发现逆侄左子树“2”与右子树黑高不同；②将逆侄与哥S颜色互换，得到情形（3）。问题递归。</p>
-<h4 id="（5）哥红"><a href="#（5）哥红" class="headerlink" title="（5）哥红"></a>（5）哥红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235630256.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<h4 id="（5）哥红"><a href="#（5）哥红" class="headerlink" title="（5）哥红"></a>（5）哥红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235630256.png" style="zoom:50%;" />
 
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235738368.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235738368.png" style="zoom:50%;" />
 
 <p><strong>方案：</strong>①对父P进行左旋，发现哥S左右子树黑高不一致；②将父P和哥S颜色互换。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1FS4y1976h/">https://www.bilibili.com/video/BV1FS4y1976h/</a>
@@ -428,7 +428,7 @@
 
             
               <!-- Comments -->
-              <article class="comments" id="comments" lazyload>
+              <article class="comments" id="comments">
                 
                   
                 
@@ -476,7 +476,7 @@
 
   <div class="col-lg-7 mx-auto nopadding-x-md">
     <div class="container custom post-custom mx-auto">
-       <img src="https://pic.imgdb.cn/item/61e0f8052ab3f51d91101e7d.png" srcset="/img/loading.gif" lazyload class="mx-auto d-block mt-5" style="width:150px; height:150px;"> <p style="text-align:center"> </p> <p style="text-align:center"># Life is about creating yourself.</p> 
+       <img src="https://pic.imgdb.cn/item/61e0f8052ab3f51d91101e7d.png" class="mx-auto d-block mt-5" style="width:150px; height:150px;"> <p style="text-align:center"> </p> <p style="text-align:center"># Life is about creating yourself.</p> 
     </div>
   </div>
 
@@ -518,10 +518,10 @@
 
   <footer class="text-center mt-5 py-3">
   <div class="footer-content">
-     © 2021-2022 <i class="iconfont icon-love"></i> Serein 
-    <div><font size="3px">
-      <span id="timeDate">载入天数...</span>
-      <span id="times">载入时分秒...</span>
+     <font size="3">Serein © 2021-2022 </font> 
+      <div><font size="2px">
+      <span id="timeDate"></span>
+      <span id="times"></span>
       <script>
       var now = new Date();
       function createtime(){
@@ -544,14 +544,14 @@
           if(String(snum).length ==1 ){
                     snum = "0" + snum;
           }
-          document.getElementById("timeDate").innerHTML = "已运行 &nbsp"+dnum+"&nbsp天";  //此次自定义显示内容
-          document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
-      }  //此次自定义显示内容 <img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/icon120.png" srcset="/img/loading.gif" lazyload style="zoom: 15%;" /> 
+          //document.getElementById("timeDate").innerHTML = "已运行 &nbsp"+dnum+"&nbsp天";  //此次自定义显示内容
+          //document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
+      }  //此次自定义显示内容 <img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/icon120.png" style="zoom: 15%;" /> 
       setInterval("createtime()",250);
       </script></font>
     </div>
     <font size="2"><a href="http://beian.miit.gov.cn/" target="_blank">鄂ICP备2022001579号-1</a></font> <font size="2">|</font> <font size="2"><a href="https://icp.gov.moe/?keyword=20220825" target="_blank">萌ICP备 20220825号</a></font><br>
-    <a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8F%88%E6%8B%8D%E4%BA%91_logo5.png" srcset="/img/loading.gif" lazyload style="zoom: 17%;" /><br>
+    <a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8F%88%E6%8B%8D%E4%BA%91_logo5.png" style="zoom: 17%;" /><br>
     <br>
   </div>
   
@@ -576,10 +576,6 @@
   <script  src="/js/local-search.js" ></script>
 
 
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
 
 
 
@@ -632,7 +628,7 @@
           inlineMath: [['$', '$'], ['\\(', '\\)']]
         },
         loader: {
-          load: ['ui/lazy']
+          
         },
         options: {
           renderActions: {
