@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-26T04:46:20.370Z</updated>
+  <updated>2022-01-31T16:32:44.880Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2022新年快乐！</title>
+    <link href="http://example.com/2022/02/01/newyear2022/"/>
+    <id>http://example.com/2022/02/01/newyear2022/</id>
+    <published>2022-01-31T16:09:57.000Z</published>
+    <updated>2022-01-31T16:32:44.880Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p><p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p><p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p><p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>]]></content>
+    
+    
+    <summary type="html">ㅤ</summary>
+    
+    
+    
+    <category term="生活" scheme="http://example.com/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>初步理解红黑树</title>
