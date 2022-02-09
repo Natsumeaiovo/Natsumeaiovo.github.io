@@ -299,7 +299,7 @@ html {
 }
 html,
 body {
-  font-family: Times, "Times New Roman", STZhongsong, STSong, FangSong, SimSun;;
+  font-family: Times, "Times New Roman", STZhongsong, STSong, Microsoft YaHei, SimSun;;
 }
 html,
 body,
@@ -936,7 +936,7 @@ label {
 .markdown-body {
   font-size: 1rem;
   line-height: 1.6;
-  font-family: Times, "Times New Roman", STZhongsong, STSong, FangSong, SimSun;;
+  font-family: Times, "Times New Roman", STZhongsong, STSong, Microsoft YaHei, SimSun;;
   margin-bottom: 2rem;
   color: var(--post-text-color);
 }
