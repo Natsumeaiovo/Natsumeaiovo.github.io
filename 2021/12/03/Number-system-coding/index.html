@@ -27,7 +27,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/NumberSystemCoding.webp">
 <meta property="article:published_time" content="2021-12-03T13:55:46.000Z">
-<meta property="article:modified_time" content="2022-02-04T04:42:22.413Z">
+<meta property="article:modified_time" content="2022-02-14T09:27:07.247Z">
 <meta property="article:author" content="Serein">
 <meta property="article:tag" content="学习">
 <meta name="twitter:card" content="summary_large_image">
@@ -71,7 +71,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -447,7 +447,7 @@
 <li>奇校验码：整个校验码（有效信息位和校验位）中“1”的个数为奇数。</li>
 <li>偶校验码：整个校验码（有效信息位和校验位）中“1”的个数为偶数。</li>
 </ul>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204143620554.png" style="zoom:80%;" />
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204143620554.png" style="zoom:80%;" /></center>
 
 <p>eg.给出两个编码1001101和1010111的奇校验码和偶校验码。</p>
 <p>解：设最高位为校验位，余7位是信息位，则对应的奇偶校验码为：</p>
@@ -467,10 +467,8 @@
             <p>码距 $\geq e + 1; $(可检测 e 个错误)</p>
           </div>
 
-<ul>
-<li>其实并不矛盾，我们来看看码距的定义：<strong>一种编码方案可能有若干个合法码字，各合法码字间的最小距离称为“码距”。</strong>我们举例一种编码方案例如：0001,0010,0100,1100 显然这个编码方案的码距为 2 ，那么可以知道，这组码字如果出现一个错误，都可以检测出来，例如第一个码字出现错误00<u>1</u>1，那么00<u>1</u>1就不在此编码方案中，检测到错误。如果出现3个错误，例如第一个码字变为了<u>11</u>0<u>0</u>，那么它即与最后一个码字是相同的，不能检测出错误。</li>
-<li>为什么奇偶校验码码距也为2，可以检测出奇数个错误呢？上述的编码方案，它并不是奇偶校验码，码字“1100”有偶数个“1”。区别就在这里！假如编码方案变为：0001,0010,0100,1000，这样每个码字都是奇校验码，当发生了3（or 2n+1）个错误，那么那个码字一定会变成偶数个“1”，所以说上述公式是针对一般码字而言的。</li>
-</ul>
+<p>其实并不矛盾，我们来看看码距的定义：<strong>一种编码方案可能有若干个合法码字，各合法码字间的最小距离称为“码距”。</strong>我们举例一种编码方案例如：0001,0010,0100,1100 显然这个编码方案的码距为 2 ，那么可以知道，这组码字如果出现一个错误，都可以检测出来，例如第一个码字出现错误00<u>1</u>1，那么00<u>1</u>1就不在此编码方案中，检测到错误。如果出现3个错误，例如第一个码字变为了<u>11</u>0<u>0</u>，那么它即与最后一个码字是相同的，不能检测出错误。</p>
+<p>为什么奇偶校验码码距也为2，可以检测出奇数个错误呢？上述的编码方案，它并不是奇偶校验码，码字“1100”有偶数个“1”。区别就在这里！假如编码方案变为：0001,0010,0100,1000，这样每个码字都是奇校验码，当发生了3（or 2n+1）个错误，那么那个码字一定会变成偶数个“1”，所以说上述公式是针对一般码字而言的。</p>
 <h3 id="海明校验码"><a href="#海明校验码" class="headerlink" title="海明校验码"></a>海明校验码</h3><p>海明校验：</p>
 <ul>
 <li>是一种多重分组奇偶校验</li>
@@ -559,9 +557,12 @@
 </ul>
 </li>
 <li><p>求校验位的值：（可采用下图所示的方法）</p>
- <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" style="zoom:80%;" /></li>
-<li><p>纠错</p>
 </li>
+</ol>
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png" style="zoom:80%;" /></center>
+
+<ol start="4">
+<li>纠错</li>
 </ol>
 <p>（1）接收到：1010010</p>
 <table>
@@ -608,7 +609,7 @@
             <p>Answer: 我们分别把 P<sub>3</sub>P<sub>2</sub>P<sub>1 </sub> 放到 421 的位置（把 P<sub>i</sub> 放在2<sup>i-1</sup>的位置），我们可以把它理解成一种权重，与海明位号二进制表示的各个权重是一一对应的！回顾一下上面求校验位值的过程，校验方程 S<sub>i</sub> 中包含的校验位即是 P<sub>i</sub> ，按从大到小的权重排列即是：S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> 。所以上述发生了错误对于各校验方程的值： S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，即指出错误的位置为第6位(H<sub>6</sub>)，即D<sub>3 </sub>发生了错误。</p>
           </div>
 
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png"  />
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207161718268.png"  /></center>
 
 <h4 id="（补充）海明码的检错、纠错能力"><a href="#（补充）海明码的检错、纠错能力" class="headerlink" title="（补充）海明码的检错、纠错能力"></a>（补充）海明码的检错、纠错能力</h4><p>纠错能力 —— 1位</p>
 <p>检错能力 —— 2位</p>
@@ -616,45 +617,45 @@
 <li><p>但是海明码<strong>无法区分是1位错还是2位错</strong>，还是上面的例子，S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 110 ，错误的位置一定为第6位？还可以是P<sub>3</sub>P<sub>2</sub>发生了错误对不对www</p>
 </li>
 <li><p>为了区分 1 位错和 2 位错，常添加“全校验位”对整体进行偶校验。</p>
+<p> S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 000 且全体偶校验成功 → 无错误</p>
+<p> S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验失败 → 有1位错，纠正即可</p>
+<p> S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验成功 → 有2位错，需重传</p>
 <table>
 <thead>
 <tr>
-<th>H<sub>8</sub></th>
-<th>H<sub>7</sub></th>
-<th>H<sub>6</sub></th>
-<th>H<sub>5</sub></th>
-<th>H<sub>4</sub></th>
-<th>H<sub>3</sub></th>
-<th>H<sub>2</sub></th>
-<th>H<sub>1</sub></th>
+<th align="center">H<sub>8</sub></th>
+<th align="center">H<sub>7</sub></th>
+<th align="center">H<sub>6</sub></th>
+<th align="center">H<sub>5</sub></th>
+<th align="center">H<sub>4</sub></th>
+<th align="center">H<sub>3</sub></th>
+<th align="center">H<sub>2</sub></th>
+<th align="center">H<sub>1</sub></th>
 </tr>
 </thead>
 <tbody><tr>
-<td>P<sub>全</sub></td>
-<td>D<sub>4</sub></td>
-<td>D<sub>3</sub></td>
-<td>D<sub>2</sub></td>
-<td>P<sub>3</sub></td>
-<td>D<sub>1</sub></td>
-<td>P<sub>2</sub></td>
-<td>P<sub>1</sub></td>
+<td align="center">P<sub>全</sub></td>
+<td align="center">D<sub>4</sub></td>
+<td align="center">D<sub>3</sub></td>
+<td align="center">D<sub>2</sub></td>
+<td align="center">P<sub>3</sub></td>
+<td align="center">D<sub>1</sub></td>
+<td align="center">P<sub>2</sub></td>
+<td align="center">P<sub>1</sub></td>
 </tr>
 <tr>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td><u>0</u></td>
-<td>0</td>
-<td><u>1</u></td>
-<td><u>0</u></td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center"><u>0</u></td>
+<td align="center">0</td>
+<td align="center"><u>1</u></td>
+<td align="center"><u>0</u></td>
 </tr>
 </tbody></table>
 </li>
 </ol>
-<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> = 000 且全体偶校验成功 → 无错误</p>
-<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验失败 → 有1位错，纠正即可</p>
-<p>S<sub>3</sub>S<sub>2</sub>S<sub>1</sub> ≠ 000 且全体偶校验成功 → 有2位错，需重传</p>
 <h3 id="循环冗余校验码（CRC码）"><a href="#循环冗余校验码（CRC码）" class="headerlink" title="循环冗余校验码（CRC码）"></a>循环冗余校验码（CRC码）</h3><h4 id="循环冗余校验码的基本思想"><a href="#循环冗余校验码的基本思想" class="headerlink" title="循环冗余校验码的基本思想"></a>循环冗余校验码的基本思想</h4><ol>
 <li><p>数据发送、接受方约定一个“除数” </p>
 </li>
@@ -663,10 +664,10 @@
 <li><p>收到数据后，进行除法检查余数是否为0，若余数非0说明出错，则进行重传或纠错</p>
 </li>
 </ol>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174813942.png" style="zoom: 80%;" />
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174813942.png" style="zoom: 80%;" /></center>
 
 <p>例如：</p>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174754144.png" style="zoom: 67%;" />
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207174754144.png" style="zoom: 67%;" /></center>
 
 
 
@@ -679,12 +680,13 @@
 <li><p>移位，信息码左移R位，低位补0</p>
 </li>
 <li><p>相除，对移位后的信息码，用生成多项式进行模2除法，产生余数（注意体会“模2除”、“模2减”）</p>
- <img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207180100532.png"  />
+</li>
+</ol>
+<center><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211207180100532.png"  /></center>
 
-<p> 对应的CRC码：101001 001</p>
-</li>
-<li><p>检错和纠错</p>
-</li>
+<p>对应的CRC码：101001 001</p>
+<ol start="4">
+<li>检错和纠错</li>
 </ol>
 <p>  发送：101001001，记为C<sub>9</sub>C<sub>8</sub>C<sub>7</sub>C<sub>6</sub>C<sub>5</sub>C<sub>4</sub>C<sub>3</sub>C<sub>2</sub>C<sub>1</sub><br>  接收：101001001</p>
 <p>  用1101进行模2除 → 余数为000，代表没有出错</p>
@@ -836,7 +838,7 @@
 
   <footer class="text-center mt-5 py-3">
   <div class="footer-content">
-     <font size="3">Serein © 2021-2022 </font> 
+    
       <div><font size="2px">
       <span id="timeDate"></span>
       <span id="times"></span>
@@ -869,7 +871,8 @@
       setInterval("createtime()",250);
       </script></font>
     </div>
-    <a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8F%88%E6%8B%8D%E4%BA%91_logo5.png" style="zoom: 18%;" /><br>
+    <font size="2">Serein © 2021-2022</font><br>
+    <a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8F%88%E6%8B%8D%E4%BA%91_logo5.png" style="zoom: 15%;" /><br>
     <font size="2"><a href="http://beian.miit.gov.cn/" target="_blank">鄂ICP备 2022001579号-1</a></font> <font size="2">|</font> <font size="2"><a href="https://icp.gov.moe/?keyword=20220825" target="_blank">萌ICP备 20220825号</a></font> <font size="2">|</font> <font size="2"><a href="http://www.beian.gov.cn/" target="_blank">鄂公网安备 42092202000058号</a></font><br>  
     <br>
   </div>

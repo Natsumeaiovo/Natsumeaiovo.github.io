@@ -1417,8 +1417,8 @@ mjx-container svg:focus,
 .post-content,
 post-custom {
   box-sizing: border-box;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-left: 8%;
+  padding-right: 8%;
 }
 @media (max-width: 767px) {
   .post-content,

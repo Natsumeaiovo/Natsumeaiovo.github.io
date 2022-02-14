@@ -1,0 +1,708 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://pic.imgdb.cn/item/61f697a32ab3f51d91ca18ec.jpg">
+  <link rel="icon" href="https://pic.imgdb.cn/item/61f697a32ab3f51d91ca18ec.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#3C3C3C">
+  <meta name="author" content="Serein">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="数据在功能部件之间传送的路径称为数据通路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CPU 数据通路的功能和基本结构">
+<meta property="og:url" content="http://example.com/2022/02/13/cpu-datapath/index.html">
+<meta property="og:site_name" content="Serein的博客">
+<meta property="og:description" content="数据在功能部件之间传送的路径称为数据通路">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/cpu1.webp">
+<meta property="article:published_time" content="2022-02-13T14:11:20.000Z">
+<meta property="article:modified_time" content="2022-02-14T11:44:22.417Z">
+<meta property="article:author" content="Serein">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/cpu1.webp">
+  
+  
+  <title>CPU 数据通路的功能和基本结构 - Serein的博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":false,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":false,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Serein的博客" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Serein&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-bilibili-fill"></i>
+                时光机
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kusanagi.oss-cn-beijing.aliyuncs.com/img/cpu1.webp') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="CPU 数据通路的功能和基本结构">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-02-13 22:11" pubdate>
+        2022年2月13日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CPU 数据通路的功能和基本结构</h1>
+            
+            <div class="markdown-body">
+              <h2 id="数据通路的功能"><a href="#数据通路的功能" class="headerlink" title="数据通路的功能"></a>数据通路的功能</h2><p>数据在功能部件之间传送的路径称为数据通路。路径上的部件称为数据通路部件，如 ALU 、通用寄存器、状态寄存器、异常和中断处理逻辑等。数据通路描述了信息从什么地方开始，中间经过哪个寄存器或多路开关，最后传送到哪个寄存器，这些都需要加以控制。</p>
+<p>数据通路中专门进行数据运算的部件成为执行部件或功能部件。数据通路由控制部件控制，控制部件根据每条指令功能的不同生成对数据通路的控制信号，并正确控制指令的执行流程。数据通路的功能是实现 CPU 内部的<strong>运算器与寄存器</strong>及<strong>寄存器之间</strong>的数据交换。</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213223504323.png" style="zoom:70%;" />
+
+<h2 id="数据通路的基本结构"><a href="#数据通路的基本结构" class="headerlink" title="数据通路的基本结构"></a>数据通路的基本结构</h2><h3 id="CPU-内部单总线方式"><a href="#CPU-内部单总线方式" class="headerlink" title="CPU 内部单总线方式"></a>CPU 内部单总线方式</h3><p><strong>内部总线</strong>是指同一部件，如CPU内部连接各寄存器及运算部件之间的总线。</p>
+<p><strong>系统总线</strong>是指同一台计算机系统的各部件，如CPU、内存、通道和各类I/O接口间互相连接的总线。</p>
+<h4 id="1-寄存器之间数据传送"><a href="#1-寄存器之间数据传送" class="headerlink" title="1. 寄存器之间数据传送"></a>1. 寄存器之间数据传送</h4><p>比如把PC内容送至MAR，实现传送操作的流程及控制信号为：</p>
+<p>(PC)→Bus（PCout有效，PC内容送总线）</p>
+<p>Bus→MAR（MARin有效，总线内容送MAR）</p>
+<p>也可写为：(PC)→Bus→MAR</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231018210.png" style="zoom:70%;" /></center>
+
+<hr>
+<h4 id="2-主存与CPU之间的数据传送"><a href="#2-主存与CPU之间的数据传送" class="headerlink" title="2. 主存与CPU之间的数据传送"></a>2. 主存与CPU之间的数据传送</h4><p>比如CPU从主存读取指令，实现传送操作的流程及控制信号为：</p>
+<p>(PC)→Bus→MAR（PCout和MARin有效，现行指令地址→MAR）</p>
+<p>1→R（CU发读命令）（通过控制总线发出，图中未画出）</p>
+<p>MEM(MAR)→MDR（MDRinE有效）</p>
+<p>MDR→Bus→IR（MDRout和IRin有效，现行指令→IR）</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231751671.png" style="zoom:67%;" /></center>
+
+<hr>
+<h4 id="3-执行算术或逻辑运算"><a href="#3-执行算术或逻辑运算" class="headerlink" title="3. 执行算术或逻辑运算"></a>3. 执行算术或逻辑运算</h4><p>比如一条加法指令，微操作序列及控制信号为：</p>
+<p>Ad(IR)→Bus→MAR（AdIRout和MARin有效）（或MDRout和MARin有效）</p>
+<p>1→R（CU发读命令）</p>
+<p>MEM(MAR)→数据线→MDR（MDRinE有效）</p>
+<p>MDR→Bus→Y（MDRout和Yin有效，操作数→Y）</p>
+<p>(ACC)+(Y)→Z（ACCout和ALUin有效，CU向ALU发送加命令）</p>
+<p>Z→ACC（Zout和ACCin有效，结果→ACC）</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213234943548.png" style="zoom:67%;" /></center>
+
+<hr>
+<h4 id="4-举例"><a href="#4-举例" class="headerlink" title="4. 举例"></a>4. 举例</h4><p>设有如图所示的单总线结构，分析指令 ADD (R0) , R1 的指令流程和控制信号。</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214142128025.png" style="zoom:67%;" /></center>
+
+<ol>
+<li><p>分析指令功能和指令周期功能：((R0))+(R1)→(R0)</p>
+<p>取指周期、间址周期、执行周期</p>
+</li>
+<li><p>写出各阶段的指令流程。</p>
+<p>取指周期：公共操作。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(PC)→MAR</td>
+<td align="center">PCout，MARin</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">M(MAR)→MDR<br/>(PC)+1→PC</td>
+<td align="center">MemR，MARout，<br/>MDRinE</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→IR</td>
+<td align="center">MDRout，IRin</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">指令译码</td>
+<td align="center">-</td>
+</tr>
+</tbody></table>
+<p>间址周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(R0)→MAR</td>
+<td align="center">R0out，MARin</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">M(MAR)→MDR</td>
+<td align="center">MemR，MARout，<br/>MDRinE</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→Y</td>
+<td align="center">MDRout，Yin</td>
+</tr>
+</tbody></table>
+<p>执行周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(R1)+(Y)→Z</td>
+<td align="center">R1out，ALUin，CU向<br/>ALU发ADD控制信号</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">(Z)→MDR</td>
+<td align="center">Zout，MDRin</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→M(MAR)</td>
+<td align="center">MemW，MDRoutE，<br/>MARout</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h3 id="CPU内部三总线方式"><a href="#CPU内部三总线方式" class="headerlink" title="CPU内部三总线方式"></a>CPU内部三总线方式</h3><p>将所有寄存器的输入端和输出端都连接到多条公共线路上，相比之下单总线中一个时钟内只允许传一个数据，因而指令执行效率很低，因此采用多总线方式，同时在多个总线上传送不同的数据，提高效率。</p>
+<h3 id="专用数据通路方式"><a href="#专用数据通路方式" class="headerlink" title="专用数据通路方式"></a>专用数据通路方式</h3><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214171801459.png" style="zoom: 60%;" /></center>
+
+<p>如上图，我们简要分析专用数据通路方式的取指周期。</p>
+<p>(PC)→MAR（C0有效）</p>
+<p>(MAR)→主存（C1有效）</p>
+<p>1→R（控制单元向主存发送读命令）</p>
+<p>M(MAR)→MDR（C2有效）</p>
+<p>(MDR)→IR（C3有效）</p>
+<p>(PC)+1→PC</p>
+<p>Op(IR)→CU（C4有效）</p>
+<hr>
+<p><strong>举例：</strong>下图是一个简化了的CPU与主存连接结构示意图（图中省略了所有的多路选择器）。其中有一个累加寄存器（ACC）、一个状态数据寄存器（PSW）和其他4个寄存器：主存地址寄存器（MAR）、主存数据寄存器（MDR）、程序寄存器（PC）和指令寄存器（IR），各部件及其之间的连线表示数据通路，箭头表示信息传递方向。</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214190638160.png" style="zoom: 67%;" /></center>
+
+<ol>
+<li><p>简述图中取指令的数据通路。</p>
+<p>(PC) → MAR</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → IR</p>
+<p>OP(IR) → 微操作信号发生器</p>
+</li>
+<li><p>简述数据在运算器和主存之间进行存/取访问的数据通路。</p>
+<p>存/取的数据放到 ACC 中，设数据地址已放入 MAR 。</p>
+<p>取：</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU → ACC</p>
+<p>存：</p>
+<p>(ACC) → MDR</p>
+<p>(MDR) → M(MAR)</p>
+</li>
+<li><p>简述完成指令 LDA X 的数据通路（X 为主存地址，LDA 的功能为(X)→ACC）。</p>
+<p>X → MAR（X 即 Ad(IR)）</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU → ACC</p>
+</li>
+<li><p>简述完成指令 ADD Y 的数据通路（Y 为主存地址，ADD 的功能为(ACC)+(Y)→ACC）。</p>
+<p>Y → MAR（Y 即 Ad(IR)）</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU, (ACC) → ALU</p>
+<p>ALU → ACC</p>
+</li>
+<li><p>简述完成指令 STA Z 的数据通路（Z 为主存地址，STA的功能为(ACC)→Z）。</p>
+<p>Z → MAR（Z 即 Ad(IR)）</p>
+<p>(ACC) → MDR</p>
+<p>(MDR) → M(MAR)</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214194130871.png" style="zoom:80%;" /></center>
+
+<p>涉及的主要操作类型：</p>
+<ul>
+<li><p>寄存器之间的数据传送；</p>
+</li>
+<li><p>主存与CPU之间的数据传送；</p>
+</li>
+<li><p>使用ALU进行算术逻辑运算。</p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AD%A6%E4%B9%A0/">学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-secondary">
+                  
+                     <font size="2">本文作者</font><font size="2">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font><font size="2">许可协议</font><br> <font size="3">Serein</font><font size="2">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank"><u><font size="3">CC BY-NC-SA 4.0</font></u></a><br> 转载或引用本文时请遵守许可协议，注明出处、不得用于商业用途！ 
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/01/newyear2022/">
+                        <span class="hidden-mobile">2022新年快乐！</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                  
+                
+                
+  <div id="twikoo"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/twikoo@1/dist/twikoo.all.min.js', function() {
+        var options = Object.assign(
+          {"envId":"https://twikoo-gdk6clrdh-natsumeaiovo.vercel.app/","region":"ap-shanghai","path":"window.location.pathname"},
+          {
+            el: '#twikoo',
+            path: 'window.location.pathname',
+            onCommentLoaded: function() {
+              Fluid.plugins.initFancyBox('#twikoo .tk-content img:not(.tk-owo-emotion)');
+            }
+          }
+        )
+        twikoo.init(options)
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+  <div class="col-lg-7 mx-auto nopadding-x-md">
+    <div class="container custom post-custom mx-auto">
+       <img src="https://pic.imgdb.cn/item/6208af432ab3f51d9175f1cf.png" class="mx-auto d-block mt-5" style="width:150px; height:150px;"> <p style="text-align:center"></p> <p style="text-align:center">What is mind?<br/>No matter.<br/>What is matter?<br/>Never mind.</p> 
+    </div>
+  </div>
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+      <div><font size="2px">
+      <span id="timeDate"></span>
+      <span id="times"></span>
+      <script>
+      var now = new Date();
+      function createtime(){
+          var grt= new Date("12/01/2021 00:00:00");//此处修改你的建站时间或者网站上线时间
+          now.setTime(now.getTime()+250);
+          days = (now - grt ) / 1000 / 60 / 60 / 24;
+          dnum = Math.floor(days);
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+          hnum = Math.floor(hours);
+          if(String(hnum).length ==1 ){
+              hnum = "0" + hnum;
+          }
+          minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+          mnum = Math.floor(minutes);
+          if(String(mnum).length ==1 ){
+                    mnum = "0" + mnum;
+          }
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+          snum = Math.round(seconds);
+          if(String(snum).length ==1 ){
+                    snum = "0" + snum;
+          }
+          //document.getElementById("timeDate").innerHTML = "已运行 &nbsp"+dnum+"&nbsp天";  //此次自定义显示内容
+          //document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
+      }  //此次自定义显示内容 <img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/icon120.png" style="zoom: 15%;" /> 
+         //网安备案图标<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/%E5%A4%87%E6%A1%88%E5%9B%BE%E6%A0%87.png" style="zoom: 70%;" />
+      setInterval("createtime()",250);
+      </script></font>
+    </div>
+    <font size="2">Serein © 2021-2022</font><br>
+    <a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/cover/%E5%8F%88%E6%8B%8D%E4%BA%91_logo5.png" style="zoom: 15%;" /><br>
+    <font size="2"><a href="http://beian.miit.gov.cn/" target="_blank">鄂ICP备 2022001579号-1</a></font> <font size="2">|</font> <font size="2"><a href="https://icp.gov.moe/?keyword=20220825" target="_blank">萌ICP备 20220825号</a></font> <font size="2">|</font> <font size="2"><a href="http://www.beian.gov.cn/" target="_blank">鄂公网安备 42092202000058号</a></font><br>  
+    <br>
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
