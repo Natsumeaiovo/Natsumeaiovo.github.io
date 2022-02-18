@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-02-17T15:36:43.643Z</updated>
+  <updated>2022-02-18T04:15:58.382Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>返校啦</title>
+    <link href="http://example.com/2022/02/18/returncampus/"/>
+    <id>http://example.com/2022/02/18/returncampus/</id>
+    <published>2022-02-18T03:37:57.000Z</published>
+    <updated>2022-02-18T04:15:58.382Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="返校途中"><a href="#返校途中" class="headerlink" title="返校途中"></a>返校途中</h2><p>一大早七点起来，我这个在寒假里每天睡到十点的人，确实也该调整一下生物钟了。从家里坐高铁坐到学校需要坐11个小时，为啥不坐飞机是因为我家那边短距离内没有机场😂。。一到车上就开始犯困，睡了一觉后，又在车上看了一部番后终于到啦。</p><p>此时的我还在听着歌悠闲地在校园走着，却不知道我的蓝牙耳机仓已经掉在了车上(哭。到了学校已经是快十点了，还下着雨，路也没走多少就是很累，回去洗洗就睡了。</p><p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120338460.png"></p><p>于是第二天一早就去做核酸检测了，还是在下雨，为啥总是一返校就下雨呢？（半恼，希望疫情可以快点过去吧。</p><p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120720842.png"></p><h2 id="新的学期"><a href="#新的学期" class="headerlink" title="新的学期"></a>新的学期</h2><p>转眼就快要毕业了，不能做一条咸鱼了，因为要准备考研，所以博客的话更新应该不会太勤，还是会偶尔写写的。</p><p>那么，新的一年加油吧，愿一切都好👋</p>]]></content>
+    
+    
+    <summary type="html">返校途中</summary>
+    
+    
+    
+    <category term="生活" scheme="http://example.com/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>oCam Screen Recorder</title>
