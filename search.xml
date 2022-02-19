@@ -1,6 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>CPU 数据通路的功能和基本结构</title>
+    <url>/2022/02/13/cpu-datapath/</url>
+    <content><![CDATA[<h2 id="数据通路的功能"><a href="#数据通路的功能" class="headerlink" title="数据通路的功能"></a>数据通路的功能</h2><p>数据在功能部件之间传送的路径称为数据通路。路径上的部件称为数据通路部件，如 ALU 、通用寄存器、状态寄存器、异常和中断处理逻辑等。数据通路描述了信息从什么地方开始，中间经过哪个寄存器或多路开关，最后传送到哪个寄存器，这些都需要加以控制。</p>
+<p>数据通路中专门进行数据运算的部件称为执行部件或功能部件。数据通路由控制部件控制，控制部件根据每条指令功能的不同生成对数据通路的控制信号，并正确控制指令的执行流程。数据通路的功能是实现 CPU 内部的<strong>运算器与寄存器</strong>及<strong>寄存器之间</strong>的数据交换。</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213223504323.png" style="zoom:70%;" />
+
+<h2 id="数据通路的基本结构"><a href="#数据通路的基本结构" class="headerlink" title="数据通路的基本结构"></a>数据通路的基本结构</h2><h3 id="CPU-内部单总线方式"><a href="#CPU-内部单总线方式" class="headerlink" title="CPU 内部单总线方式"></a>CPU 内部单总线方式</h3><p><strong>内部总线</strong>是指同一部件，如CPU内部连接各寄存器及运算部件之间的总线。</p>
+<p><strong>系统总线</strong>是指同一台计算机系统的各部件，如CPU、内存、通道和各类I/O接口间互相连接的总线。</p>
+<h4 id="1-寄存器之间数据传送"><a href="#1-寄存器之间数据传送" class="headerlink" title="1. 寄存器之间数据传送"></a>1. 寄存器之间数据传送</h4><p>比如把PC内容送至MAR，实现传送操作的流程及控制信号为：</p>
+<p>(PC)→Bus（PCout有效，PC内容送总线）</p>
+<p>Bus→MAR（MARin有效，总线内容送MAR）</p>
+<p>也可写为：(PC)→Bus→MAR</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231018210.png" style="zoom:70%;" /></center>
+
+<hr>
+<h4 id="2-主存与CPU之间的数据传送"><a href="#2-主存与CPU之间的数据传送" class="headerlink" title="2. 主存与CPU之间的数据传送"></a>2. 主存与CPU之间的数据传送</h4><p>比如CPU从主存读取指令，实现传送操作的流程及控制信号为：</p>
+<p>(PC)→Bus→MAR（PCout和MARin有效，现行指令地址→MAR）</p>
+<p>1→R（CU发读命令）（通过控制总线发出，图中未画出）</p>
+<p>MEM(MAR)→MDR（MDRinE有效）</p>
+<p>MDR→Bus→IR（MDRout和IRin有效，现行指令→IR）</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231751671.png" style="zoom:67%;" /></center>
+
+<hr>
+<h4 id="3-执行算术或逻辑运算"><a href="#3-执行算术或逻辑运算" class="headerlink" title="3. 执行算术或逻辑运算"></a>3. 执行算术或逻辑运算</h4><p>比如一条加法指令，微操作序列及控制信号为：</p>
+<p>Ad(IR)→Bus→MAR（AdIRout和MARin有效）（或MDRout和MARin有效）</p>
+<p>1→R（CU发读命令）</p>
+<p>MEM(MAR)→数据线→MDR（MDRinE有效）</p>
+<p>MDR→Bus→Y（MDRout和Yin有效，操作数→Y）</p>
+<p>(ACC)+(Y)→Z（ACCout和ALUin有效，CU向ALU发送加命令）</p>
+<p>Z→ACC（Zout和ACCin有效，结果→ACC）</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213234943548.png" style="zoom:67%;" /></center>
+
+<hr>
+<h4 id="4-举例"><a href="#4-举例" class="headerlink" title="4. 举例"></a>4. 举例</h4><p>设有如图所示的单总线结构，分析指令 ADD (R0) , R1 的指令流程和控制信号。</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214142128025.png" style="zoom:67%;" /></center>
+
+<ol>
+<li><p>分析指令功能和指令周期功能：((R0))+(R1)→(R0)</p>
+<p>取指周期、间址周期、执行周期</p>
+</li>
+<li><p>写出各阶段的指令流程。</p>
+<p>取指周期：公共操作。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(PC)→MAR</td>
+<td align="center">PCout，MARin</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">M(MAR)→MDR<br/>(PC)+1→PC</td>
+<td align="center">MemR，MARout，<br/>MDRinE</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→IR</td>
+<td align="center">MDRout，IRin</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">指令译码</td>
+<td align="center">-</td>
+</tr>
+</tbody></table>
+<p>间址周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(R0)→MAR</td>
+<td align="center">R0out，MARin</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">M(MAR)→MDR</td>
+<td align="center">MemR，MARout，<br/>MDRinE</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→Y</td>
+<td align="center">MDRout，Yin</td>
+</tr>
+</tbody></table>
+<p>执行周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时序</th>
+<th align="center">微操作</th>
+<th align="center">有效控制信号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">(R1)+(Y)→Z</td>
+<td align="center">R1out，ALUin，CU向<br/>ALU发ADD控制信号</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">(Z)→MDR</td>
+<td align="center">Zout，MDRin</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">(MDR)→M(MAR)</td>
+<td align="center">MemW，MDRoutE，<br/>MARout</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h3 id="CPU内部三总线方式"><a href="#CPU内部三总线方式" class="headerlink" title="CPU内部三总线方式"></a>CPU内部三总线方式</h3><p>将所有寄存器的输入端和输出端都连接到多条公共线路上，相比之下单总线中一个时钟内只允许传一个数据，因而指令执行效率很低，因此采用多总线方式，同时在多个总线上传送不同的数据，提高效率。</p>
+<h3 id="专用数据通路方式"><a href="#专用数据通路方式" class="headerlink" title="专用数据通路方式"></a>专用数据通路方式</h3><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214171801459.png" style="zoom: 60%;" /></center>
+
+<p>如上图，我们简要分析专用数据通路方式的取指周期。</p>
+<p>(PC)→MAR（C0有效）</p>
+<p>(MAR)→主存（C1有效）</p>
+<p>1→R（控制单元向主存发送读命令）</p>
+<p>M(MAR)→MDR（C2有效）</p>
+<p>(MDR)→IR（C3有效）</p>
+<p>(PC)+1→PC</p>
+<p>Op(IR)→CU（C4有效）</p>
+<hr>
+<p><strong>举例：</strong>下图是一个简化了的CPU与主存连接结构示意图（图中省略了所有的多路选择器）。其中有一个累加寄存器（ACC）、一个状态数据寄存器（PSW）和其他4个寄存器：主存地址寄存器（MAR）、主存数据寄存器（MDR）、程序寄存器（PC）和指令寄存器（IR），各部件及其之间的连线表示数据通路，箭头表示信息传递方向。</p>
+<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214190638160.png" style="zoom: 67%;" /></center>
+
+<ol>
+<li><p>简述图中取指令的数据通路。</p>
+<p>(PC) → MAR</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → IR</p>
+<p>OP(IR) → 微操作信号发生器</p>
+</li>
+<li><p>简述数据在运算器和主存之间进行存/取访问的数据通路。</p>
+<p>存/取的数据放到 ACC 中，设数据地址已放入 MAR 。</p>
+<p>取：</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU → ACC</p>
+<p>存：</p>
+<p>(ACC) → MDR</p>
+<p>(MDR) → M(MAR)</p>
+</li>
+<li><p>简述完成指令 LDA X 的数据通路（X 为主存地址，LDA 的功能为(X)→ACC）。</p>
+<p>X → MAR（X 即 Ad(IR)）</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU → ACC</p>
+</li>
+<li><p>简述完成指令 ADD Y 的数据通路（Y 为主存地址，ADD 的功能为(ACC)+(Y)→ACC）。</p>
+<p>Y → MAR（Y 即 Ad(IR)）</p>
+<p>M(MAR) → MDR</p>
+<p>(MDR) → ALU, (ACC) → ALU</p>
+<p>ALU → ACC</p>
+</li>
+<li><p>简述完成指令 STA Z 的数据通路（Z 为主存地址，STA的功能为(ACC)→Z）。</p>
+<p>Z → MAR（Z 即 Ad(IR)）</p>
+<p>(ACC) → MDR</p>
+<p>(MDR) → M(MAR)</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214194130871.png" style="zoom:80%;" /></center>
+
+<p>涉及的主要操作类型：</p>
+<ul>
+<li><p>寄存器之间的数据传送；</p>
+</li>
+<li><p>主存与CPU之间的数据传送；</p>
+</li>
+<li><p>使用ALU进行算术逻辑运算。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机组成原理</category>
+      </categories>
+      <tags>
+        <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数制与编码</title>
     <url>/2021/12/03/Number-system-coding/</url>
     <content><![CDATA[<h2 id="一、进位计数制"><a href="#一、进位计数制" class="headerlink" title="一、进位计数制"></a>一、进位计数制</h2><p>二进制 → 八进制：  3位一组</p>
@@ -555,6 +746,19 @@
       </tags>
   </entry>
   <entry>
+    <title>2022新年快乐！</title>
+    <url>/2022/02/01/newyear2022/</url>
+    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+  </entry>
+  <entry>
     <title>找到二叉树给定两结点的共同祖先</title>
     <url>/2021/12/26/common-ancestor-of-the-binary-tree/</url>
     <content><![CDATA[<h2 id="一、思路"><a href="#一、思路" class="headerlink" title="一、思路"></a>一、思路</h2><h3 id="如何得到一个给定结点的所有祖先？"><a href="#如何得到一个给定结点的所有祖先？" class="headerlink" title="如何得到一个给定结点的所有祖先？"></a>如何得到一个给定结点的所有祖先？</h3><!-- more -->我们很容易想到后序遍历，利用栈实现后序遍历时，遍历到某结点时，栈中所有元素即该结点祖先。
@@ -583,197 +787,6 @@
       <tags>
         <tag>学习</tag>
         <tag>二叉树</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CPU 数据通路的功能和基本结构</title>
-    <url>/2022/02/13/cpu-datapath/</url>
-    <content><![CDATA[<h2 id="数据通路的功能"><a href="#数据通路的功能" class="headerlink" title="数据通路的功能"></a>数据通路的功能</h2><p>数据在功能部件之间传送的路径称为数据通路。路径上的部件称为数据通路部件，如 ALU 、通用寄存器、状态寄存器、异常和中断处理逻辑等。数据通路描述了信息从什么地方开始，中间经过哪个寄存器或多路开关，最后传送到哪个寄存器，这些都需要加以控制。</p>
-<p>数据通路中专门进行数据运算的部件成为执行部件或功能部件。数据通路由控制部件控制，控制部件根据每条指令功能的不同生成对数据通路的控制信号，并正确控制指令的执行流程。数据通路的功能是实现 CPU 内部的<strong>运算器与寄存器</strong>及<strong>寄存器之间</strong>的数据交换。</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213223504323.png" style="zoom:70%;" />
-
-<h2 id="数据通路的基本结构"><a href="#数据通路的基本结构" class="headerlink" title="数据通路的基本结构"></a>数据通路的基本结构</h2><h3 id="CPU-内部单总线方式"><a href="#CPU-内部单总线方式" class="headerlink" title="CPU 内部单总线方式"></a>CPU 内部单总线方式</h3><p><strong>内部总线</strong>是指同一部件，如CPU内部连接各寄存器及运算部件之间的总线。</p>
-<p><strong>系统总线</strong>是指同一台计算机系统的各部件，如CPU、内存、通道和各类I/O接口间互相连接的总线。</p>
-<h4 id="1-寄存器之间数据传送"><a href="#1-寄存器之间数据传送" class="headerlink" title="1. 寄存器之间数据传送"></a>1. 寄存器之间数据传送</h4><p>比如把PC内容送至MAR，实现传送操作的流程及控制信号为：</p>
-<p>(PC)→Bus（PCout有效，PC内容送总线）</p>
-<p>Bus→MAR（MARin有效，总线内容送MAR）</p>
-<p>也可写为：(PC)→Bus→MAR</p>
-<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231018210.png" style="zoom:70%;" /></center>
-
-<hr>
-<h4 id="2-主存与CPU之间的数据传送"><a href="#2-主存与CPU之间的数据传送" class="headerlink" title="2. 主存与CPU之间的数据传送"></a>2. 主存与CPU之间的数据传送</h4><p>比如CPU从主存读取指令，实现传送操作的流程及控制信号为：</p>
-<p>(PC)→Bus→MAR（PCout和MARin有效，现行指令地址→MAR）</p>
-<p>1→R（CU发读命令）（通过控制总线发出，图中未画出）</p>
-<p>MEM(MAR)→MDR（MDRinE有效）</p>
-<p>MDR→Bus→IR（MDRout和IRin有效，现行指令→IR）</p>
-<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213231751671.png" style="zoom:67%;" /></center>
-
-<hr>
-<h4 id="3-执行算术或逻辑运算"><a href="#3-执行算术或逻辑运算" class="headerlink" title="3. 执行算术或逻辑运算"></a>3. 执行算术或逻辑运算</h4><p>比如一条加法指令，微操作序列及控制信号为：</p>
-<p>Ad(IR)→Bus→MAR（AdIRout和MARin有效）（或MDRout和MARin有效）</p>
-<p>1→R（CU发读命令）</p>
-<p>MEM(MAR)→数据线→MDR（MDRinE有效）</p>
-<p>MDR→Bus→Y（MDRout和Yin有效，操作数→Y）</p>
-<p>(ACC)+(Y)→Z（ACCout和ALUin有效，CU向ALU发送加命令）</p>
-<p>Z→ACC（Zout和ACCin有效，结果→ACC）</p>
-<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220213234943548.png" style="zoom:67%;" /></center>
-
-<hr>
-<h4 id="4-举例"><a href="#4-举例" class="headerlink" title="4. 举例"></a>4. 举例</h4><p>设有如图所示的单总线结构，分析指令 ADD (R0) , R1 的指令流程和控制信号。</p>
-<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214142128025.png" style="zoom:67%;" /></center>
-
-<ol>
-<li><p>分析指令功能和指令周期功能：((R0))+(R1)→(R0)</p>
-<p>取指周期、间址周期、执行周期</p>
-</li>
-<li><p>写出各阶段的指令流程。</p>
-<p>取指周期：公共操作。</p>
-<table>
-<thead>
-<tr>
-<th align="center">时序</th>
-<th align="center">微操作</th>
-<th align="center">有效控制信号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">(PC)→MAR</td>
-<td align="center">PCout，MARin</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">M(MAR)→MDR<br/>(PC)+1→PC</td>
-<td align="center">MemR，MARout，<br/>MDRinE</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">(MDR)→IR</td>
-<td align="center">MDRout，IRin</td>
-</tr>
-<tr>
-<td align="center">4</td>
-<td align="center">指令译码</td>
-<td align="center">-</td>
-</tr>
-</tbody></table>
-<p>间址周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
-<table>
-<thead>
-<tr>
-<th align="center">时序</th>
-<th align="center">微操作</th>
-<th align="center">有效控制信号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">(R0)→MAR</td>
-<td align="center">R0out，MARin</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">M(MAR)→MDR</td>
-<td align="center">MemR，MARout，<br/>MDRinE</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">(MDR)→Y</td>
-<td align="center">MDRout，Yin</td>
-</tr>
-</tbody></table>
-<p>执行周期：完成取数操作，被加数在主存中，加数已经放在寄存器R1中。</p>
-<table>
-<thead>
-<tr>
-<th align="center">时序</th>
-<th align="center">微操作</th>
-<th align="center">有效控制信号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">(R1)+(Y)→Z</td>
-<td align="center">R1out，ALUin，CU向<br/>ALU发ADD控制信号</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">(Z)→MDR</td>
-<td align="center">Zout，MDRin</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">(MDR)→M(MAR)</td>
-<td align="center">MemW，MDRoutE，<br/>MARout</td>
-</tr>
-</tbody></table>
-</li>
-</ol>
-<h3 id="CPU内部三总线方式"><a href="#CPU内部三总线方式" class="headerlink" title="CPU内部三总线方式"></a>CPU内部三总线方式</h3><p>将所有寄存器的输入端和输出端都连接到多条公共线路上，相比之下单总线中一个时钟内只允许传一个数据，因而指令执行效率很低，因此采用多总线方式，同时在多个总线上传送不同的数据，提高效率。</p>
-<h3 id="专用数据通路方式"><a href="#专用数据通路方式" class="headerlink" title="专用数据通路方式"></a>专用数据通路方式</h3><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214171801459.png" style="zoom: 60%;" /></center>
-
-<p>如上图，我们简要分析专用数据通路方式的取指周期。</p>
-<p>(PC)→MAR（C0有效）</p>
-<p>(MAR)→主存（C1有效）</p>
-<p>1→R（控制单元向主存发送读命令）</p>
-<p>M(MAR)→MDR（C2有效）</p>
-<p>(MDR)→IR（C3有效）</p>
-<p>(PC)+1→PC</p>
-<p>Op(IR)→CU（C4有效）</p>
-<hr>
-<p><strong>举例：</strong>下图是一个简化了的CPU与主存连接结构示意图（图中省略了所有的多路选择器）。其中有一个累加寄存器（ACC）、一个状态数据寄存器（PSW）和其他4个寄存器：主存地址寄存器（MAR）、主存数据寄存器（MDR）、程序寄存器（PC）和指令寄存器（IR），各部件及其之间的连线表示数据通路，箭头表示信息传递方向。</p>
-<center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214190638160.png" style="zoom: 67%;" /></center>
-
-<ol>
-<li><p>简述图中取指令的数据通路。</p>
-<p>(PC) → MAR</p>
-<p>M(MAR) → MDR</p>
-<p>(MDR) → IR</p>
-<p>OP(IR) → 微操作信号发生器</p>
-</li>
-<li><p>简述数据在运算器和主存之间进行存/取访问的数据通路。</p>
-<p>存/取的数据放到 ACC 中，设数据地址已放入 MAR 。</p>
-<p>取：</p>
-<p>M(MAR) → MDR</p>
-<p>(MDR) → ALU → ACC</p>
-<p>存：</p>
-<p>(ACC) → MDR</p>
-<p>(MDR) → M(MAR)</p>
-</li>
-<li><p>简述完成指令 LDA X 的数据通路（X 为主存地址，LDA 的功能为(X)→ACC）。</p>
-<p>X → MAR（X 即 Ad(IR)）</p>
-<p>M(MAR) → MDR</p>
-<p>(MDR) → ALU → ACC</p>
-</li>
-<li><p>简述完成指令 ADD Y 的数据通路（Y 为主存地址，ADD 的功能为(ACC)+(Y)→ACC）。</p>
-<p>Y → MAR（Y 即 Ad(IR)）</p>
-<p>M(MAR) → MDR</p>
-<p>(MDR) → ALU, (ACC) → ALU</p>
-<p>ALU → ACC</p>
-</li>
-<li><p>简述完成指令 STA Z 的数据通路（Z 为主存地址，STA的功能为(ACC)→Z）。</p>
-<p>Z → MAR（Z 即 Ad(IR)）</p>
-<p>(ACC) → MDR</p>
-<p>(MDR) → M(MAR)</p>
-</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><center><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220214194130871.png" style="zoom:80%;" /></center>
-
-<p>涉及的主要操作类型：</p>
-<ul>
-<li><p>寄存器之间的数据传送；</p>
-</li>
-<li><p>主存与CPU之间的数据传送；</p>
-</li>
-<li><p>使用ALU进行算术逻辑运算。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机组成原理</category>
-      </categories>
-      <tags>
-        <tag>学习</tag>
       </tags>
   </entry>
   <entry>
@@ -815,34 +828,6 @@
       </tags>
   </entry>
   <entry>
-    <title>2022新年快乐！</title>
-    <url>/2022/02/01/newyear2022/</url>
-    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>开学</title>
-    <url>/2022/02/18/returncampus/</url>
-    <content><![CDATA[<h2 id="返校途中"><a href="#返校途中" class="headerlink" title="返校途中"></a>返校途中</h2><p>一大早七点起来，我这个在寒假里每天睡到十点的人，确实也该调整一下生物钟了。从家里坐高铁坐到学校需要坐11个小时，为啥不坐飞机是因为我家那边短距离内没有机场😂。。一到车上就开始犯困，睡了一觉后，又在车上看了一部番后终于到啦。</p>
-<p>此时的我还在听着歌悠闲地在校园走着，却不知道我的蓝牙耳机仓已经掉在了车上(哭。到了学校已经是快十点了，还下着雨，路也没走多少就是很累，回去洗洗就睡了。</p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120338460.png"></p>
-<p>于是第二天一早就去做核酸检测了，还是在下雨，为啥总是一返校就下雨呢？（半恼，希望疫情可以快点过去吧。</p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120720842.png"></p>
-<h2 id="新的学期"><a href="#新的学期" class="headerlink" title="新的学期"></a>新的学期</h2><p>转眼就快要毕业了，不能做一条咸鱼了，因为要准备考研，所以博客的话更新应该不会太勤，还是会偶尔写写的。</p>
-<p>那么，新的一年加油吧，愿一切都好👋</p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-  </entry>
-  <entry>
     <title>oCam Screen Recorder</title>
     <url>/2022/02/15/oCam/</url>
     <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="秘密不对哦！" data-whm="抱歉，这个文章不能被校验，不过您还是能看看解密后的内容。">
@@ -863,5 +848,20 @@
       <tags>
         <tag>工具</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>开学</title>
+    <url>/2022/02/18/returncampus/</url>
+    <content><![CDATA[<h2 id="返校途中"><a href="#返校途中" class="headerlink" title="返校途中"></a>返校途中</h2><p>一大早七点起来，我这个在寒假里每天睡到十点的人，确实也该调整一下生物钟了。从家里坐高铁坐到学校需要坐11个小时，为啥不坐飞机是因为我家那边短距离内没有机场😂。。一到车上就开始犯困，睡了一觉后，又在车上看了一部番后终于到啦。</p>
+<p>此时的我还在听着歌悠闲地在校园走着，却不知道我的蓝牙耳机仓已经掉在了车上(哭。到了学校已经是快十点了，还下着雨，路也没走多少就是很累，回去洗洗就睡了。</p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120338460.png"></p>
+<p>于是第二天一早就去做核酸检测了，还是在下雨，为啥总是一返校就下雨呢？（半恼，希望疫情可以快点过去吧。</p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120720842.png"></p>
+<h2 id="新的学期"><a href="#新的学期" class="headerlink" title="新的学期"></a>新的学期</h2><p>转眼就快要毕业了，不能做一条咸鱼了，因为要准备考研，所以博客的话更新应该不会太勤，还是会偶尔写写的。</p>
+<p>那么，新的一年加油吧，愿一切都好👋</p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
   </entry>
 </search>
