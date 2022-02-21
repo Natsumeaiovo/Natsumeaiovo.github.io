@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Serein&#39;s Blog</title>
+  <icon>https://www.gravatar.com/avatar/ff52826797d8c480a4184e29beabd20d</icon>
   
+  <link href="https://serein.fun/atom.xml" rel="self"/>
   
-  <link href="http://serein.fun/atom.xml" rel="self"/>
-  
-  <link href="http://serein.fun/"/>
+  <link href="https://serein.fun/"/>
   <updated>2022-02-21T01:58:59.167Z</updated>
-  <id>http://serein.fun/</id>
+  <id>https://serein.fun/</id>
   
   <author>
     <name>Serein</name>
-    
+    <email>natsumeaiovo@outlook.com</email>
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
     <title>开学</title>
-    <link href="http://serein.fun/2022/02/18/returncampus/"/>
-    <id>http://serein.fun/2022/02/18/returncampus/</id>
+    <link href="https://serein.fun/2022/02/18/returncampus/"/>
+    <id>https://serein.fun/2022/02/18/returncampus/</id>
     <published>2022-02-18T03:37:57.000Z</published>
     <updated>2022-02-21T01:58:59.167Z</updated>
     
@@ -30,15 +30,15 @@
     
     
     
-    <category term="生活" scheme="http://serein.fun/categories/%E7%94%9F%E6%B4%BB/"/>
+    <category term="生活" scheme="https://serein.fun/categories/%E7%94%9F%E6%B4%BB/"/>
     
     
   </entry>
   
   <entry>
     <title>oCam Screen Recorder</title>
-    <link href="http://serein.fun/2022/02/15/oCam/"/>
-    <id>http://serein.fun/2022/02/15/oCam/</id>
+    <link href="https://serein.fun/2022/02/15/oCam/"/>
+    <id>https://serein.fun/2022/02/15/oCam/</id>
     <published>2022-02-15T12:10:06.000Z</published>
     <updated>2022-02-21T01:10:42.514Z</updated>
     
@@ -49,17 +49,17 @@
     
     
     
-    <category term="工具" scheme="http://serein.fun/categories/%E5%B7%A5%E5%85%B7/"/>
+    <category term="工具" scheme="https://serein.fun/categories/%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="工具" scheme="http://serein.fun/tags/%E5%B7%A5%E5%85%B7/"/>
+    <category term="工具" scheme="https://serein.fun/tags/%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
   <entry>
     <title>CPU 数据通路的功能和基本结构</title>
-    <link href="http://serein.fun/2022/02/13/cpu-datapath/"/>
-    <id>http://serein.fun/2022/02/13/cpu-datapath/</id>
+    <link href="https://serein.fun/2022/02/13/cpu-datapath/"/>
+    <id>https://serein.fun/2022/02/13/cpu-datapath/</id>
     <published>2022-02-13T14:11:20.000Z</published>
     <updated>2022-02-21T00:47:07.602Z</updated>
     
@@ -70,17 +70,17 @@
     
     
     
-    <category term="计算机组成原理" scheme="http://serein.fun/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/"/>
+    <category term="计算机组成原理" scheme="https://serein.fun/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/"/>
     
     
-    <category term="学习" scheme="http://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
   <entry>
     <title>2022新年快乐！</title>
-    <link href="http://serein.fun/2022/02/01/newyear2022/"/>
-    <id>http://serein.fun/2022/02/01/newyear2022/</id>
+    <link href="https://serein.fun/2022/02/01/newyear2022/"/>
+    <id>https://serein.fun/2022/02/01/newyear2022/</id>
     <published>2022-01-31T16:09:57.000Z</published>
     <updated>2022-02-21T01:09:20.885Z</updated>
     
@@ -91,15 +91,15 @@
     
     
     
-    <category term="生活" scheme="http://serein.fun/categories/%E7%94%9F%E6%B4%BB/"/>
+    <category term="生活" scheme="https://serein.fun/categories/%E7%94%9F%E6%B4%BB/"/>
     
     
   </entry>
   
   <entry>
     <title>初步理解红黑树</title>
-    <link href="http://serein.fun/2022/01/15/RB-Tree/"/>
-    <id>http://serein.fun/2022/01/15/RB-Tree/</id>
+    <link href="https://serein.fun/2022/01/15/RB-Tree/"/>
+    <id>https://serein.fun/2022/01/15/RB-Tree/</id>
     <published>2022-01-15T12:12:53.000Z</published>
     <updated>2022-02-21T00:12:06.624Z</updated>
     
@@ -110,19 +110,19 @@
     
     
     
-    <category term="数据结构" scheme="http://serein.fun/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    <category term="数据结构" scheme="https://serein.fun/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
     
-    <category term="学习" scheme="http://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="二叉树" scheme="http://serein.fun/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
+    <category term="二叉树" scheme="https://serein.fun/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
     
   </entry>
   
   <entry>
     <title>找到二叉树给定两结点的共同祖先</title>
-    <link href="http://serein.fun/2021/12/26/common-ancestor-of-the-binary-tree/"/>
-    <id>http://serein.fun/2021/12/26/common-ancestor-of-the-binary-tree/</id>
+    <link href="https://serein.fun/2021/12/26/common-ancestor-of-the-binary-tree/"/>
+    <id>https://serein.fun/2021/12/26/common-ancestor-of-the-binary-tree/</id>
     <published>2021-12-25T17:28:11.000Z</published>
     <updated>2022-02-21T01:09:29.633Z</updated>
     
@@ -133,19 +133,19 @@
     
     
     
-    <category term="数据结构" scheme="http://serein.fun/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    <category term="数据结构" scheme="https://serein.fun/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
     
-    <category term="学习" scheme="http://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="二叉树" scheme="http://serein.fun/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
+    <category term="二叉树" scheme="https://serein.fun/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
     
   </entry>
   
   <entry>
     <title>数制与编码</title>
-    <link href="http://serein.fun/2021/12/03/Number-system-coding/"/>
-    <id>http://serein.fun/2021/12/03/Number-system-coding/</id>
+    <link href="https://serein.fun/2021/12/03/Number-system-coding/"/>
+    <id>https://serein.fun/2021/12/03/Number-system-coding/</id>
     <published>2021-12-03T13:55:46.000Z</published>
     <updated>2022-02-21T01:09:16.972Z</updated>
     
@@ -156,17 +156,17 @@
     
     
     
-    <category term="计算机组成原理" scheme="http://serein.fun/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/"/>
+    <category term="计算机组成原理" scheme="https://serein.fun/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/"/>
     
     
-    <category term="学习" scheme="http://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
+    <category term="学习" scheme="https://serein.fun/tags/%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
   <entry>
     <title>使用Magpie来增加你的游戏体验！</title>
-    <link href="http://serein.fun/2021/12/02/magpie/"/>
-    <id>http://serein.fun/2021/12/02/magpie/</id>
+    <link href="https://serein.fun/2021/12/02/magpie/"/>
+    <id>https://serein.fun/2021/12/02/magpie/</id>
     <published>2021-12-01T16:07:08.000Z</published>
     <updated>2022-02-21T01:09:25.378Z</updated>
     
@@ -177,10 +177,10 @@
     
     
     
-    <category term="工具" scheme="http://serein.fun/categories/%E5%B7%A5%E5%85%B7/"/>
+    <category term="工具" scheme="https://serein.fun/categories/%E5%B7%A5%E5%85%B7/"/>
     
     
-    <category term="工具" scheme="http://serein.fun/tags/%E5%B7%A5%E5%85%B7/"/>
+    <category term="工具" scheme="https://serein.fun/tags/%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
