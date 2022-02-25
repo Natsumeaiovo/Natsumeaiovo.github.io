@@ -918,19 +918,6 @@ BiTree <span class="token function">Find_x</span><span class="token punctuation"
       </tags>
   </entry>
   <entry>
-    <title>2022新年快乐！</title>
-    <url>/2022/02/01/newyear2022/</url>
-    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-  </entry>
-  <entry>
     <title>使用Magpie来增加你的游戏体验！</title>
     <url>/2021/12/02/magpie/</url>
     <content><![CDATA[<h2 id="FSR算法和Anime4K算法"><a href="#FSR算法和Anime4K算法" class="headerlink" title="FSR算法和Anime4K算法"></a>FSR算法和Anime4K算法</h2><h3 id="FSR"><a href="#FSR" class="headerlink" title="FSR"></a>FSR</h3><p>​    AMD FidelityFX Super Resolution，简称FSR，中文名称是“AMD超级分辨率锐画技术”。就是使用超分辨率技术实现高分辨率，高品质游戏画面，并显著提高游戏运行效率的一套实现方法和程序库。它免费开源，跨平台，针对硬件进行了优化，集成到程序也非常简单（实际上只有两个文件），最神奇的是，运行它并不需要特殊的硬件，甚至如前几代的Intel CPU内集成的核显，都可以使用该技术。FSR算法正式开源后，FSR技术的源代码、开发文档、实例都已经放在了AMD GPUOpen网站上，开发者可以直接用于他们的游戏。AMD目前提供的实例支持DX12、Vulkan，但保证说编译着色器也兼容DX11。</p>
@@ -967,6 +954,19 @@ BiTree <span class="token function">Find_x</span><span class="token punctuation"
       <tags>
         <tag>工具</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>2022新年快乐！</title>
+    <url>/2022/02/01/newyear2022/</url>
+    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
   </entry>
   <entry>
     <title>oCam Screen Recorder</title>
