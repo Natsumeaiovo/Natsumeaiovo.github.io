@@ -238,6 +238,19 @@ span#pink-block {
   border-radius: 0.1rem;
   background-color:#FFC0CB;
 }
+
+/* 鼠标图标 */
+body {
+  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/normal.cur), auto;
+  margin: 0;
+}
+
+a:hover{
+  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/ayuda.cur), auto;
+}
+
+
+
 .limit-one-line,
 #article-container .flink .flink-item-name,
 #article-container .flink .flink-item-desc,
