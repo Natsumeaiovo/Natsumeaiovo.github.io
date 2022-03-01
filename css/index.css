@@ -241,12 +241,12 @@ span#pink-block {
 
 /* 鼠标图标 */
 body {
-  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/normal.cur), auto;
+  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/Arrow.cur), auto;
   margin: 0;
 }
 
 a:hover{
-  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/ayuda.cur), auto;
+  cursor: url(https://kusanagi.oss-cn-beijing.aliyuncs.com/blog/cursor/Hand.cur), auto;
 }
 
 .limit-one-line,
