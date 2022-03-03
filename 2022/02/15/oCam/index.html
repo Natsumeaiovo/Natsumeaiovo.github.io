@@ -175,7 +175,7 @@ else
     twikoo.init(Object.assign({
       el: '#twikoo-wrap',
       envId: 'https://twikoo-nuro6z4e5-natsumeaiovo.vercel.app',
-      region: 'ap-shanghai',
+      region: '',
       onCommentLoaded: function () {
         btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
       }
@@ -185,7 +185,7 @@ else
   const getCount = () => {
     twikoo.getCommentsCount({
       envId: 'https://twikoo-nuro6z4e5-natsumeaiovo.vercel.app',
-      region: 'ap-shanghai',
+      region: '',
       urls: [window.location.pathname],
       includeReply: false
     }).then(function (res) {
