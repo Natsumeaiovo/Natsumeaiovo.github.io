@@ -1,6 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>初步理解红黑树</title>
+    <url>/2022/01/15/RB-Tree/</url>
+    <content><![CDATA[<h2 id="为何需要红黑树？"><a href="#为何需要红黑树？" class="headerlink" title="为何需要红黑树？"></a>为何需要红黑树？</h2><p>平衡二叉树 AVL：插入/删除 很容易破坏“平衡”特性，需要频繁调整树的形态。如：插入操作导致不平衡，则需要先计算平衡因子，找到最小不平衡子树（时间开销大），再进行 LL/RR/LR/RL 调整。适用于以查为主、很少插入/删除的场景。</p>
+<p>红黑树 RBT：插入/删除 很多时候不会破坏“红黑”特性，无需频繁调整树的形态。即便需要调整，一般都可以在常数级时间内完成。适用于频繁插入、删除的场景，实用性更强。</p>
+<h2 id="红黑树的定义与性质"><a href="#红黑树的定义与性质" class="headerlink" title="红黑树的定义与性质"></a>红黑树的定义与性质</h2><p>红黑树结点：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">RBnode</span><span class="token punctuation">&#123;</span>       <span class="token comment">//红黑树的结点定义</span>
+    <span class="token keyword">int</span> key<span class="token punctuation">;</span>         <span class="token comment">//关键字的值</span>
+    RBnode<span class="token operator">*</span> parent<span class="token punctuation">;</span>  <span class="token comment">//父结点指针</span>
+    RBnode<span class="token operator">*</span> lchild<span class="token punctuation">;</span>  <span class="token comment">//左孩子指针</span>
+    RBnode<span class="token operator">*</span> rchild<span class="token punctuation">;</span>  <span class="token comment">//右孩子指针</span>
+    <span class="token keyword">int</span> color<span class="token punctuation">;</span>       <span class="token comment">//结点颜色，如：可用 0/1 表示 黑/红，也可使用枚举型enum表示颜色</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol>
+<li><p>红黑树是二叉排序树，满足左子树结点值 ≤ 根结点值 ≤ 右子树结点值。</p>
+</li>
+<li><p>与普通BST相比，有什么性质？</p>
+<p>①每个结点或是红色，或是黑色的</p>
+<p>②根节点是黑色的</p>
+<p>③叶结点（外部结点、NULL结点、失败结点）均是黑色的</p>
+<p>④不存在两个相邻的红结点（即红结点的父节点和孩子结点均是黑色）</p>
+<p>⑤对每个结点，从该节点到任一叶结点的简单路径上，所含黑结点的数目相同</p>
+<p>实例：一颗红黑树</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220115203316375.png" style="zoom:40%;" /></li>
+</ol>
+<div class="note info flat"><p>结点的黑高 bh ：从某结点出发（不含该结点）到达任一空叶结点（含叶结点）的路径上黑结点总数。</p>
+</div>
+
+<p><strong>思考：</strong>根节点黑高为 h 的红黑树，内部结点数（关键字）至少有多少个？</p>
+<p>Answer：内部结点数最少的情况——总共h层黑结点的满树形态，即：</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116150104977.png" style="zoom: 80%;" />
+
+<p>结论：若根节点黑高为h，内部结点数（关键字）最少有 2<sup>h</sup>-1 个</p>
+<p>进而有如下结论：</p>
+<ul>
+<li>结论1：从根节点到叶结点的最长路径不大于最短路径的2倍</li>
+<li>结论2：有n个内部节点的红黑树高度 h ≤ 2$log_2 (n+1)$</li>
+</ul>
+<p>→ 红黑树查找操作时间复杂度 = $O(log_2 (n))$</p>
+<p>性质1很容易证明，这里写下结论2的证明：</p>
+<p><strong>证明：</strong>由结论1可知，从根到叶结点（不含叶结点）的任何一条简单路径上都至少有一半是黑结点，因此，根的黑高至少为h/2，于是有n ≥ 2<sup>h/2</sup> - 1，即可求得结论。</p>
+<p>可见，红黑树的“适度平衡”，由AVL树的“高度平衡”，降低到“任一结点左右子树的高度，相差不超过2倍”，也降低了动态操作，也降低了动态操作时调整的频率。对于一颗动态查找树，如果插入和删除操作比较少，查找操作比较多，采用AVL树比较合适，否则采用红黑树更合适。但由于维护这种高度平衡所付出的代价比获得的效益大得多，红黑树的实际应用更广泛，C++中的 map 和 set （Java 中的 TreeMap 和 TreeSet）就是用红黑树实现的。</p>
+<h2 id="红黑树的插入"><a href="#红黑树的插入" class="headerlink" title="红黑树的插入"></a>红黑树的插入</h2><p>先查找，确定插入位置（原理同二叉排序树），插入新结点</p>
+<ul>
+<li><p>新结点是<strong>根</strong>——染为黑色</p>
+</li>
+<li><p>新结点<strong>非根</strong>——染为红色</p>
+<ul>
+<li><p>若插入新结点后依然满足红黑树定义，则插入结束</p>
+</li>
+<li><p>若插入新结点后不满足红黑树定义，需要调整，使其重新满足红黑树定义</p>
+<ul>
+<li>黑叔：旋转+染色<ul>
+<li>LL型：右单旋，父换爷+染色</li>
+<li>RR型：左单旋，父换爷+染色</li>
+<li>LR型：左、右双旋，儿换爷+染色</li>
+<li>RL型：右、左双旋，儿换爷+染色</li>
+</ul>
+</li>
+<li>红叔：染色+变新 <ul>
+<li>叔父爷染色，爷变为新结点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>例：</strong>从一棵空的红黑树开始，插入：20, 10, 5, 30, 40, 57, 3, 2, 4, 35, 25, 18, 22, 23, 24, 19, 18 </p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116000500362.png" style="zoom: 45%;" />
+
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116001531379.png" style="zoom:45%;" />
+
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002640320.png" style="zoom:45%;" />
+
+<p>…</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002829660.png" style="zoom:80%;" />
+
+<p>一直重复上述操作，最终得到：</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002935419.png" style="zoom:45%;" />
+
+<h2 id="红黑树的删除"><a href="#红黑树的删除" class="headerlink" title="红黑树的删除"></a>红黑树的删除</h2><h3 id="1-删除红结点"><a href="#1-删除红结点" class="headerlink" title="1. 删除红结点"></a>1. 删除红结点</h3><p>对于删除红结点，其不会破坏红黑树原有的性质。<strong>第一</strong>，根结点到任意叶结点的黑结点数量不变，不会破坏红黑树的黑高；<strong>其次</strong>，删除红结点，不会有相邻的红结点出现，因为红结点的子结点总是黑色。删除红结点过程中，红结点可以分为：</p>
+<ul>
+<li>没有子结点</li>
+<li>一个子结点</li>
+<li>两个子结点</li>
+</ul>
+<p>此时，直接应用AVL树中删除结点的方法，对其进行删除，过程不再赘述。问题只剩下删除黑结点。</p>
+<h3 id="2-删除黑结点"><a href="#2-删除黑结点" class="headerlink" title="2. 删除黑结点"></a>2. 删除黑结点</h3><p>删除黑结点的过程繁琐得多，主要分为以下情况：</p>
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225206937.png" style="zoom:45%;" />
+
+<p>问题：“我”的一个黑色子结点被删除了，经调整后<strong>我和我的子树“1”构成的树已满足红黑树的性质，但是“父P”的左子树的黑高 -1</strong> ，如何修复整颗红黑树的性质？</p>
+<p>对于如下不同情形的方案：</p>
+<h4 id="哥黑，双侄黑，父黑"><a href="#哥黑，双侄黑，父黑" class="headerlink" title="哥黑，双侄黑，父黑"></a>哥黑，双侄黑，父黑</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116232723116.png" style="zoom:50%;" />
+
+<p><strong>方案：</strong>将哥S染红，问题解决。</p>
+<h4 id="哥黑，双侄黑，父红"><a href="#哥黑，双侄黑，父红" class="headerlink" title="哥黑，双侄黑，父红"></a>哥黑，双侄黑，父红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225805164.png" style="zoom:50%;" />
+
+<p><strong>方案：</strong>直接将父P和哥S换色，问题解决。</p>
+<h4 id="哥黑，顺侄红（逆侄色任意，父色任意）"><a href="#哥黑，顺侄红（逆侄色任意，父色任意）" class="headerlink" title="哥黑，顺侄红（逆侄色任意，父色任意）"></a>哥黑，顺侄红（逆侄色任意，父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116231511669.png" style="zoom: 50%;" />
+
+<p><strong>方案：</strong>①首先对父P进行左旋；②将父P与哥S的颜色交换；③将顺侄染为黑色，问题解决。</p>
+<h4 id="哥黑，顺侄黑，逆侄红（父色任意）"><a href="#哥黑，顺侄黑，逆侄红（父色任意）" class="headerlink" title="哥黑，顺侄黑，逆侄红（父色任意）"></a>哥黑，顺侄黑，逆侄红（父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116234653862.png" style="zoom:50%;" />
+
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116233420377.png" style="zoom:50%;" />
+
+<p><strong>方案：</strong>①首先对哥S进行右旋，发现逆侄左子树“2”与右子树黑高不同；②将逆侄与哥S颜色互换，得到情形 4.2.3 ，问题递归。</p>
+<h4 id="哥红"><a href="#哥红" class="headerlink" title="哥红"></a>哥红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235630256.png" style="zoom:50%;" />
+
+<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235738368.png" style="zoom:50%;" />
+
+<p><strong>方案：</strong>①对父P进行左旋，发现哥S左右子树黑高不一致；②将父P和哥S颜色互换。得到情形 4.2.2 ，问题递归。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>[ 1 ] <a href="https://www.bilibili.com/video/BV1FS4y1976h/">https://www.bilibili.com/video/BV1FS4y1976h/</a></p>
+<p>[ 2 ] <a href="https://www.bilibili.com/video/BV1uZ4y1P7rr/">https://www.bilibili.com/video/BV1uZ4y1P7rr/</a></p>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>学习</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数制与编码</title>
     <url>/2021/12/03/Number-system-coding/</url>
     <content><![CDATA[<h2 id="进位计数制"><a href="#进位计数制" class="headerlink" title="进位计数制"></a>进位计数制</h2><p>二进制 → 八进制：  3位一组</p>
@@ -603,6 +727,57 @@ BiTree <span class="token function">Find_x</span><span class="token punctuation"
       </tags>
   </entry>
   <entry>
+    <title>使用Magpie来增加你的游戏体验！</title>
+    <url>/2021/12/02/magpie/</url>
+    <content><![CDATA[<h2 id="FSR算法和Anime4K算法"><a href="#FSR算法和Anime4K算法" class="headerlink" title="FSR算法和Anime4K算法"></a>FSR算法和Anime4K算法</h2><h3 id="FSR"><a href="#FSR" class="headerlink" title="FSR"></a>FSR</h3><p>​    AMD FidelityFX Super Resolution，简称FSR，中文名称是“AMD超级分辨率锐画技术”。就是使用超分辨率技术实现高分辨率，高品质游戏画面，并显著提高游戏运行效率的一套实现方法和程序库。它免费开源，跨平台，针对硬件进行了优化，集成到程序也非常简单（实际上只有两个文件），最神奇的是，运行它并不需要特殊的硬件，甚至如前几代的Intel CPU内集成的核显，都可以使用该技术。FSR算法正式开源后，FSR技术的源代码、开发文档、实例都已经放在了AMD GPUOpen网站上，开发者可以直接用于他们的游戏。AMD目前提供的实例支持DX12、Vulkan，但保证说编译着色器也兼容DX11。</p>
+<p>​    AMD还表示，FSR技术不像NVIDIA DLSS那样依赖于运动向量(Motion Vector)或者历史缓冲区(History Buffer)，因此不需要专门的Tensor核心来加速，但同样也能使用时间数据，只是现阶段FSR的重心是简化开发、快速推向市场，技术上会逐步深入增强。来看看FSR的实际表现：</p>
+<p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012549359.png"></p>
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012310018.png" style="zoom: 80%;" />
+
+
+<h3 id="Anime4K"><a href="#Anime4K" class="headerlink" title="Anime4K"></a>Anime4K</h3><p>​    当你在看老番或是在推一部老物 gal &amp; avg ，是否在为其画质差而发愁？Anime4K（动漫图片超分辨率算法）即是一个实时、视频动画放大算法，不用等待处理视频动画的时间，在你观看的同时即可做到画质提升，在一周内，Anime4K在Github上收获了将近3千颗星，作者在6天前介绍了reddit上的项目，并成为每个人的热门话题，引起了极大的关注。引用一下作者原话：</p>
+<div class="note info flat"><p>Anime4K is a set of open-source, high-quality real-time anime upscaling/denoising algorithms that can be implemented in any programming language.</p>
+<p>The simplicity and speed of Anime4K allows the user to watch upscaled anime in real time, as we believe in preserving original content and promoting freedom of choice for all anime fans. Re-encoding anime into 4K should be avoided as it is non-reversible, potentially damages original content by introducing artifacts, takes up to O(n<sup>2</sup>) more disk space and more importantly, does so without any meaningful decrease in entropy (lost information is lost).</p>
+</div>
+
+<p>​    附上开源项目原地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/bloc97/Anime4K">https://github.com/bloc97/Anime4K</a></p>
+<p>​    将其导入到支持的视频软件后，便可以享受1080P升级到近4K的画质了，来看看使用具体表现！</p>
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012627278.png" style="zoom: 50%;" />
+
+<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012707750.png" style="zoom: 50%;" />
+
+<hr>
+<h2 id="使用Magpie提高游戏体验"><a href="#使用Magpie提高游戏体验" class="headerlink" title="使用Magpie提高游戏体验"></a>使用Magpie提高游戏体验</h2><p>开源项目地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/Blinue/Magpie/tree/v0.7.1">https://github.com/Blinue/Magpie/tree/v0.7.1</a></p>
+<blockquote>
+<p>Magpie 可以将任意窗口放大至全屏，支持多种高级缩放算法，包括 Lanczos、<a href="https://github.com/bloc97/Anime4K">Anime4K</a>、<a href="https://github.com/GPUOpen-Effects/FidelityFX-FSR">FSR</a>、<a href="https://github.com/igv/FSRCNN-TensorFlow">FSRCNNX</a>等。</p>
+<p>主要用于游戏窗口的放大显示，适用于不支持全屏模式，或者内置的全屏模式会使画面模糊的情况。</p>
+</blockquote>
+<p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204013127026.png"></p>
+<p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>全部变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多。当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
+<p>当然，使用算法实时渲染提升画质，对显卡来说是有性能要求的，所以要想畅玩享受全屏清晰画质的 anime &amp; gal 的话，一个相对来说好点显卡是必须的。</p>
+<p>对于提升游戏帧数来说，不同游戏的体验不同，实际使用Magpie支持的FSR算法体验不算很好，期待以后算法的改善。</p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2022新年快乐！</title>
+    <url>/2022/02/01/newyear2022/</url>
+    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+  </entry>
+  <entry>
     <title>CPU 数据通路的功能和基本结构</title>
     <url>/2022/02/13/cpu-datapath/</url>
     <content><![CDATA[<h2 id="数据通路的功能"><a href="#数据通路的功能" class="headerlink" title="数据通路的功能"></a>数据通路的功能</h2><p>数据在功能部件之间传送的路径称为数据通路。路径上的部件称为数据通路部件，如 ALU 、通用寄存器、状态寄存器、异常和中断处理逻辑等。数据通路描述了信息从什么地方开始，中间经过哪个寄存器或多路开关，最后传送到哪个寄存器，这些都需要加以控制。</p>
@@ -794,179 +969,19 @@ BiTree <span class="token function">Find_x</span><span class="token punctuation"
       </tags>
   </entry>
   <entry>
-    <title>初步理解红黑树</title>
-    <url>/2022/01/15/RB-Tree/</url>
-    <content><![CDATA[<h2 id="为何需要红黑树？"><a href="#为何需要红黑树？" class="headerlink" title="为何需要红黑树？"></a>为何需要红黑树？</h2><p>平衡二叉树 AVL：插入/删除 很容易破坏“平衡”特性，需要频繁调整树的形态。如：插入操作导致不平衡，则需要先计算平衡因子，找到最小不平衡子树（时间开销大），再进行 LL/RR/LR/RL 调整。适用于以查为主、很少插入/删除的场景。</p>
-<p>红黑树 RBT：插入/删除 很多时候不会破坏“红黑”特性，无需频繁调整树的形态。即便需要调整，一般都可以在常数级时间内完成。适用于频繁插入、删除的场景，实用性更强。</p>
-<h2 id="红黑树的定义与性质"><a href="#红黑树的定义与性质" class="headerlink" title="红黑树的定义与性质"></a>红黑树的定义与性质</h2><p>红黑树结点：</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">RBnode</span><span class="token punctuation">&#123;</span>       <span class="token comment">//红黑树的结点定义</span>
-    <span class="token keyword">int</span> key<span class="token punctuation">;</span>         <span class="token comment">//关键字的值</span>
-    RBnode<span class="token operator">*</span> parent<span class="token punctuation">;</span>  <span class="token comment">//父结点指针</span>
-    RBnode<span class="token operator">*</span> lchild<span class="token punctuation">;</span>  <span class="token comment">//左孩子指针</span>
-    RBnode<span class="token operator">*</span> rchild<span class="token punctuation">;</span>  <span class="token comment">//右孩子指针</span>
-    <span class="token keyword">int</span> color<span class="token punctuation">;</span>       <span class="token comment">//结点颜色，如：可用 0/1 表示 黑/红，也可使用枚举型enum表示颜色</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<ol>
-<li><p>红黑树是二叉排序树，满足左子树结点值 ≤ 根结点值 ≤ 右子树结点值。</p>
-</li>
-<li><p>与普通BST相比，有什么性质？</p>
-<p>①每个结点或是红色，或是黑色的</p>
-<p>②根节点是黑色的</p>
-<p>③叶结点（外部结点、NULL结点、失败结点）均是黑色的</p>
-<p>④不存在两个相邻的红结点（即红结点的父节点和孩子结点均是黑色）</p>
-<p>⑤对每个结点，从该节点到任一叶结点的简单路径上，所含黑结点的数目相同</p>
-<p>实例：一颗红黑树</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220115203316375.png" style="zoom:40%;" /></li>
-</ol>
-<div class="note info flat"><p>结点的黑高 bh ：从某结点出发（不含该结点）到达任一空叶结点（含叶结点）的路径上黑结点总数。</p>
-</div>
-
-<p><strong>思考：</strong>根节点黑高为 h 的红黑树，内部结点数（关键字）至少有多少个？</p>
-<p>Answer：内部结点数最少的情况——总共h层黑结点的满树形态，即：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116150104977.png" style="zoom: 80%;" />
-
-<p>结论：若根节点黑高为h，内部结点数（关键字）最少有 2<sup>h</sup>-1 个</p>
-<p>进而有如下结论：</p>
-<ul>
-<li>结论1：从根节点到叶结点的最长路径不大于最短路径的2倍</li>
-<li>结论2：有n个内部节点的红黑树高度 h ≤ 2$log_2 (n+1)$</li>
-</ul>
-<p>→ 红黑树查找操作时间复杂度 = $O(log_2 (n))$</p>
-<p>性质1很容易证明，这里写下结论2的证明：</p>
-<p><strong>证明：</strong>由结论1可知，从根到叶结点（不含叶结点）的任何一条简单路径上都至少有一半是黑结点，因此，根的黑高至少为h/2，于是有n ≥ 2<sup>h/2</sup> - 1，即可求得结论。</p>
-<p>可见，红黑树的“适度平衡”，由AVL树的“高度平衡”，降低到“任一结点左右子树的高度，相差不超过2倍”，也降低了动态操作，也降低了动态操作时调整的频率。对于一颗动态查找树，如果插入和删除操作比较少，查找操作比较多，采用AVL树比较合适，否则采用红黑树更合适。但由于维护这种高度平衡所付出的代价比获得的效益大得多，红黑树的实际应用更广泛，C++中的 map 和 set （Java 中的 TreeMap 和 TreeSet）就是用红黑树实现的。</p>
-<h2 id="红黑树的插入"><a href="#红黑树的插入" class="headerlink" title="红黑树的插入"></a>红黑树的插入</h2><p>先查找，确定插入位置（原理同二叉排序树），插入新结点</p>
-<ul>
-<li><p>新结点是<strong>根</strong>——染为黑色</p>
-</li>
-<li><p>新结点<strong>非根</strong>——染为红色</p>
-<ul>
-<li><p>若插入新结点后依然满足红黑树定义，则插入结束</p>
-</li>
-<li><p>若插入新结点后不满足红黑树定义，需要调整，使其重新满足红黑树定义</p>
-<ul>
-<li>黑叔：旋转+染色<ul>
-<li>LL型：右单旋，父换爷+染色</li>
-<li>RR型：左单旋，父换爷+染色</li>
-<li>LR型：左、右双旋，儿换爷+染色</li>
-<li>RL型：右、左双旋，儿换爷+染色</li>
-</ul>
-</li>
-<li>红叔：染色+变新 <ul>
-<li>叔父爷染色，爷变为新结点</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>例：</strong>从一棵空的红黑树开始，插入：20, 10, 5, 30, 40, 57, 3, 2, 4, 35, 25, 18, 22, 23, 24, 19, 18 </p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116000500362.png" style="zoom: 45%;" />
-
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116001531379.png" style="zoom:45%;" />
-
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002640320.png" style="zoom:45%;" />
-
-<p>…</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002829660.png" style="zoom:80%;" />
-
-<p>一直重复上述操作，最终得到：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116002935419.png" style="zoom:45%;" />
-
-<h2 id="红黑树的删除"><a href="#红黑树的删除" class="headerlink" title="红黑树的删除"></a>红黑树的删除</h2><h3 id="1-删除红结点"><a href="#1-删除红结点" class="headerlink" title="1. 删除红结点"></a>1. 删除红结点</h3><p>对于删除红结点，其不会破坏红黑树原有的性质。<strong>第一</strong>，根结点到任意叶结点的黑结点数量不变，不会破坏红黑树的黑高；<strong>其次</strong>，删除红结点，不会有相邻的红结点出现，因为红结点的子结点总是黑色。删除红结点过程中，红结点可以分为：</p>
-<ul>
-<li>没有子结点</li>
-<li>一个子结点</li>
-<li>两个子结点</li>
-</ul>
-<p>此时，直接应用AVL树中删除结点的方法，对其进行删除，过程不再赘述。问题只剩下删除黑结点。</p>
-<h3 id="2-删除黑结点"><a href="#2-删除黑结点" class="headerlink" title="2. 删除黑结点"></a>2. 删除黑结点</h3><p>删除黑结点的过程繁琐得多，主要分为以下情况：</p>
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225206937.png" style="zoom:45%;" />
-
-<p>问题：“我”的一个黑色子结点被删除了，经调整后<strong>我和我的子树“1”构成的树已满足红黑树的性质，但是“父P”的左子树的黑高 -1</strong> ，如何修复整颗红黑树的性质？</p>
-<p>对于如下不同情形的方案：</p>
-<h4 id="哥黑，双侄黑，父黑"><a href="#哥黑，双侄黑，父黑" class="headerlink" title="哥黑，双侄黑，父黑"></a>哥黑，双侄黑，父黑</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116232723116.png" style="zoom:50%;" />
-
-<p><strong>方案：</strong>将哥S染红，问题解决。</p>
-<h4 id="哥黑，双侄黑，父红"><a href="#哥黑，双侄黑，父红" class="headerlink" title="哥黑，双侄黑，父红"></a>哥黑，双侄黑，父红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116225805164.png" style="zoom:50%;" />
-
-<p><strong>方案：</strong>直接将父P和哥S换色，问题解决。</p>
-<h4 id="哥黑，顺侄红（逆侄色任意，父色任意）"><a href="#哥黑，顺侄红（逆侄色任意，父色任意）" class="headerlink" title="哥黑，顺侄红（逆侄色任意，父色任意）"></a>哥黑，顺侄红（逆侄色任意，父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116231511669.png" style="zoom: 50%;" />
-
-<p><strong>方案：</strong>①首先对父P进行左旋；②将父P与哥S的颜色交换；③将顺侄染为黑色，问题解决。</p>
-<h4 id="哥黑，顺侄黑，逆侄红（父色任意）"><a href="#哥黑，顺侄黑，逆侄红（父色任意）" class="headerlink" title="哥黑，顺侄黑，逆侄红（父色任意）"></a>哥黑，顺侄黑，逆侄红（父色任意）</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116234653862.png" style="zoom:50%;" />
-
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116233420377.png" style="zoom:50%;" />
-
-<p><strong>方案：</strong>①首先对哥S进行右旋，发现逆侄左子树“2”与右子树黑高不同；②将逆侄与哥S颜色互换，得到情形 4.2.3 ，问题递归。</p>
-<h4 id="哥红"><a href="#哥红" class="headerlink" title="哥红"></a>哥红</h4><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235630256.png" style="zoom:50%;" />
-
-<img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220116235738368.png" style="zoom:50%;" />
-
-<p><strong>方案：</strong>①对父P进行左旋，发现哥S左右子树黑高不一致；②将父P和哥S颜色互换。得到情形 4.2.2 ，问题递归。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>[ 1 ] <a href="https://www.bilibili.com/video/BV1FS4y1976h/">https://www.bilibili.com/video/BV1FS4y1976h/</a></p>
-<p>[ 2 ] <a href="https://www.bilibili.com/video/BV1uZ4y1P7rr/">https://www.bilibili.com/video/BV1uZ4y1P7rr/</a></p>
-]]></content>
-      <categories>
-        <category>数据结构</category>
-      </categories>
-      <tags>
-        <tag>学习</tag>
-        <tag>二叉树</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2022新年快乐！</title>
-    <url>/2022/02/01/newyear2022/</url>
-    <content><![CDATA[<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002705612.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002738797.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002759448.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201002831626.png"></p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220201103327465.png"></p>
+    <title>开学</title>
+    <url>/2022/02/18/returncampus/</url>
+    <content><![CDATA[<h2 id="返校途中"><a href="#返校途中" class="headerlink" title="返校途中"></a>返校途中</h2><p>一大早七点起来，我这个在寒假里每天睡到十点的人，确实也该调整一下生物钟了。从家里坐高铁坐到学校需要坐11个小时，为啥不坐飞机是因为我家那边短距离内没有机场😂。。一到车上就开始犯困，睡了一觉后，又在车上看了一部番后终于到啦。</p>
+<p>此时的我还在听着歌悠闲地在校园走着，却不知道我的蓝牙耳机仓已经掉在了车上(哭。到了学校已经是快十点了，还下着雨，路也没走多少就是很累，回去洗洗就睡了。</p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120338460.png"></p>
+<p>于是第二天一早就去做核酸检测了，还是在下雨，为啥总是一返校就下雨呢？（半恼，希望疫情可以快点过去吧。</p>
+<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120720842.png"></p>
+<h2 id="新的学期"><a href="#新的学期" class="headerlink" title="新的学期"></a>新的学期</h2><p>转眼就快要毕业了，不能做一条咸鱼了，因为要准备考研，所以博客的话更新应该不会太勤，还是会偶尔写写的。</p>
+<p>那么，新的一年加油吧，愿一切都好👋</p>
 ]]></content>
       <categories>
         <category>生活</category>
       </categories>
-  </entry>
-  <entry>
-    <title>使用Magpie来增加你的游戏体验！</title>
-    <url>/2021/12/02/magpie/</url>
-    <content><![CDATA[<h2 id="FSR算法和Anime4K算法"><a href="#FSR算法和Anime4K算法" class="headerlink" title="FSR算法和Anime4K算法"></a>FSR算法和Anime4K算法</h2><h3 id="FSR"><a href="#FSR" class="headerlink" title="FSR"></a>FSR</h3><p>​    AMD FidelityFX Super Resolution，简称FSR，中文名称是“AMD超级分辨率锐画技术”。就是使用超分辨率技术实现高分辨率，高品质游戏画面，并显著提高游戏运行效率的一套实现方法和程序库。它免费开源，跨平台，针对硬件进行了优化，集成到程序也非常简单（实际上只有两个文件），最神奇的是，运行它并不需要特殊的硬件，甚至如前几代的Intel CPU内集成的核显，都可以使用该技术。FSR算法正式开源后，FSR技术的源代码、开发文档、实例都已经放在了AMD GPUOpen网站上，开发者可以直接用于他们的游戏。AMD目前提供的实例支持DX12、Vulkan，但保证说编译着色器也兼容DX11。</p>
-<p>​    AMD还表示，FSR技术不像NVIDIA DLSS那样依赖于运动向量(Motion Vector)或者历史缓冲区(History Buffer)，因此不需要专门的Tensor核心来加速，但同样也能使用时间数据，只是现阶段FSR的重心是简化开发、快速推向市场，技术上会逐步深入增强。来看看FSR的实际表现：</p>
-<p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012549359.png"></p>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012310018.png" style="zoom: 80%;" />
-
-
-<h3 id="Anime4K"><a href="#Anime4K" class="headerlink" title="Anime4K"></a>Anime4K</h3><p>​    当你在看老番或是在推一部老物 gal &amp; avg ，是否在为其画质差而发愁？Anime4K（动漫图片超分辨率算法）即是一个实时、视频动画放大算法，不用等待处理视频动画的时间，在你观看的同时即可做到画质提升，在一周内，Anime4K在Github上收获了将近3千颗星，作者在6天前介绍了reddit上的项目，并成为每个人的热门话题，引起了极大的关注。引用一下作者原话：</p>
-<div class="note info flat"><p>Anime4K is a set of open-source, high-quality real-time anime upscaling/denoising algorithms that can be implemented in any programming language.</p>
-<p>The simplicity and speed of Anime4K allows the user to watch upscaled anime in real time, as we believe in preserving original content and promoting freedom of choice for all anime fans. Re-encoding anime into 4K should be avoided as it is non-reversible, potentially damages original content by introducing artifacts, takes up to O(n<sup>2</sup>) more disk space and more importantly, does so without any meaningful decrease in entropy (lost information is lost).</p>
-</div>
-
-<p>​    附上开源项目原地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/bloc97/Anime4K">https://github.com/bloc97/Anime4K</a></p>
-<p>​    将其导入到支持的视频软件后，便可以享受1080P升级到近4K的画质了，来看看使用具体表现！</p>
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012627278.png" style="zoom: 50%;" />
-
-<img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204012707750.png" style="zoom: 50%;" />
-
-<hr>
-<h2 id="使用Magpie提高游戏体验"><a href="#使用Magpie提高游戏体验" class="headerlink" title="使用Magpie提高游戏体验"></a>使用Magpie提高游戏体验</h2><p>开源项目地址：<i class="fa fa-link" aria-hidden="true"></i> <a href="https://github.com/Blinue/Magpie/tree/v0.7.1">https://github.com/Blinue/Magpie/tree/v0.7.1</a></p>
-<blockquote>
-<p>Magpie 可以将任意窗口放大至全屏，支持多种高级缩放算法，包括 Lanczos、<a href="https://github.com/bloc97/Anime4K">Anime4K</a>、<a href="https://github.com/GPUOpen-Effects/FidelityFX-FSR">FSR</a>、<a href="https://github.com/igv/FSRCNN-TensorFlow">FSRCNNX</a>等。</p>
-<p>主要用于游戏窗口的放大显示，适用于不支持全屏模式，或者内置的全屏模式会使画面模糊的情况。</p>
-</blockquote>
-<p><img src="http://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20211204013127026.png"></p>
-<p>上面提到的两个算法，Magpie全部支持，不能全屏的老游戏都可以全屏，还可以使用Anime4K算法让其<del>全部变为4K画质？</del>（当然不可能全部提升到4K，但观感比原生画质好太多。当然游戏和动画的画质低，提升效果也就相对较差，720P以上的游戏提升效果会比较好！1080P提升后与4K观感相差无几，涂抹感很少。</p>
-<p>当然，使用算法实时渲染提升画质，对显卡来说是有性能要求的，所以要想畅玩享受全屏清晰画质的 anime &amp; gal 的话，一个相对来说好点显卡是必须的。</p>
-<p>对于提升游戏帧数来说，不同游戏的体验不同，实际使用Magpie支持的FSR算法体验不算很好，期待以后算法的改善。</p>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>工具</tag>
-      </tags>
   </entry>
   <entry>
     <title>oCam Screen Recorder</title>
@@ -989,21 +1004,6 @@ BiTree <span class="token function">Find_x</span><span class="token punctuation"
       <tags>
         <tag>工具</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>开学</title>
-    <url>/2022/02/18/returncampus/</url>
-    <content><![CDATA[<h2 id="返校途中"><a href="#返校途中" class="headerlink" title="返校途中"></a>返校途中</h2><p>一大早七点起来，我这个在寒假里每天睡到十点的人，确实也该调整一下生物钟了。从家里坐高铁坐到学校需要坐11个小时，为啥不坐飞机是因为我家那边短距离内没有机场😂。。一到车上就开始犯困，睡了一觉后，又在车上看了一部番后终于到啦。</p>
-<p>此时的我还在听着歌悠闲地在校园走着，却不知道我的蓝牙耳机仓已经掉在了车上(哭。到了学校已经是快十点了，还下着雨，路也没走多少就是很累，回去洗洗就睡了。</p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120338460.png"></p>
-<p>于是第二天一早就去做核酸检测了，还是在下雨，为啥总是一返校就下雨呢？（半恼，希望疫情可以快点过去吧。</p>
-<p><img src="https://kusanagi.oss-cn-beijing.aliyuncs.com/img/image-20220218120720842.png"></p>
-<h2 id="新的学期"><a href="#新的学期" class="headerlink" title="新的学期"></a>新的学期</h2><p>转眼就快要毕业了，不能做一条咸鱼了，因为要准备考研，所以博客的话更新应该不会太勤，还是会偶尔写写的。</p>
-<p>那么，新的一年加油吧，愿一切都好👋</p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
   </entry>
   <entry>
     <title>利用信号量实现进程同步和互斥</title>
